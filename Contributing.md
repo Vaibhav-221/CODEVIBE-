@@ -2,118 +2,538 @@
 
 # Contributing to CodeVibe
 
-Thank you for your interest in contributing to CodeVibe.
-Please follow the steps and guidelines below to ensure a smooth contribution process.
+Thank you for your interest in contributing to CodeVibe! We're excited to have you help make coding education more accessible and engaging.
+
+## Table of Contents
+
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [Development Setup](#development-setup)
+- [Making Contributions](#making-contributions)
+- [Commit Guidelines](#commit-guidelines)
+- [Pull Request Process](#pull-request-process)
+- [Reporting Issues](#reporting-issues)
+- [Feature Requests](#feature-requests)
+- [Style Guide](#style-guide)
+- [Review Process](#review-process)
+
+---
+
+## Code of Conduct
+
+### Our Pledge
+We are committed to providing a welcoming and inspiring community for all. We pledge that everyone participating in the CodeVibe community will be treated with respect and dignity.
+
+### Our Standards
+- Be respectful and inclusive
+- Welcome feedback and criticism gracefully
+- Focus on what is best for the community
+- Show empathy towards others
+
+### Enforcement
+Instances of unacceptable behavior may result in temporary or permanent removal from the community.
 
 ---
 
 ## Getting Started
 
-### 1. Fork the Repository
+### Prerequisites
+- Node.js 16.x or higher
+- npm 7.x or higher (or yarn)
+- Git 2.x or higher
+- GitHub account with SSH keys configured
 
-Create your own copy of the repository by clicking the **Fork** button.
+### Areas to Contribute
+
+1. **Code**
+   - Bug fixes
+   - New features
+   - Performance improvements
+   - Code refactoring
+
+2. **Documentation**
+   - README improvements
+   - API documentation
+   - Tutorial writing
+   - Comment clarifications
+
+3. **Testing**
+   - Unit tests
+   - Integration tests
+   - End-to-end tests
+   - Bug reproductions
+
+4. **Design**
+   - UI/UX improvements
+   - CSS enhancements
+   - Component design
+   - Accessibility improvements
 
 ---
 
-### 2. Clone Your Fork
+## Development Setup
 
+### 1. Fork and Clone
 ```bash
-git clone https://github.com/<your-username>/CodeVibe.git   # Clone your fork
-cd CodeVibe                                                 # Navigate into the project folder
+# Fork the repository on GitHub, then:
+git clone https://github.com/YOUR_USERNAME/CODEVIBE-.git
+cd CODEVIBE-
+git remote add upstream https://github.com/JiyaBatra/CODEVIBE-.git
+```
+
+### 2. Create a Branch
+```bash
+# Update main branch
+git checkout main
+git pull upstream main
+
+# Create feature branch
+git checkout -b feature/your-feature-name
+# or for bug fixes
+git checkout -b fix/issue-name
+```
+
+### 3. Install Dependencies
+```bash
+# Frontend
+cd client
+npm install
+
+# Backend
+cd ../server
+npm install
+```
+
+### 4. Start Development Servers
+```bash
+# Terminal 1 - Backend (from server directory)
+npm run dev
+
+# Terminal 2 - Frontend (from client directory)
+npm run dev
+```
+
+### 5. Verify Setup
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
+- MongoDB: Must be running locally or connection configured
+
+---
+
+## Making Contributions
+
+### Small Contributions (Documentation, Minor Fixes)
+
+1. Make your changes
+2. Test locally
+3. Commit with a clear message
+4. Push to your fork
+5. Create a PR
+
+### Medium Contributions (Bug Fixes, Small Features)
+
+1. Discuss in an issue first (if applicable)
+2. Create a feature branch
+3. Write tests for your changes
+4. Document your code
+5. Follow code style guidelines
+6. Create a PR with description
+
+### Large Contributions (Major Features)
+
+1. Open an issue to discuss the feature
+2. Wait for maintainer feedback
+3. Get approval before implementing
+4. Follow complete development process
+5. Write comprehensive tests
+6. Update all relevant documentation
+
+---
+
+## Commit Guidelines
+
+### Commit Message Format
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Type
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation changes
+- **style**: Code style changes (no logic change)
+- **refactor**: Code refactoring
+- **perf**: Performance improvements
+- **test**: Adding or updating tests
+- **chore**: Build process or dependencies
+
+### Scope
+- `client` - Frontend/React changes
+- `server` - Backend/Node.js changes
+- `auth` - Authentication related
+- `compiler` - Code execution related
+- `dashboard` - Progress tracking related
+- `certificates` - Certificate generation related
+
+### Subject
+- Use imperative, present tense: "add" not "added" or "adds"
+- Don't capitalize first letter
+- No period (.) at the end
+- Limit to 50 characters
+
+### Body
+- Explain what and why, not how
+- Wrap at 72 characters
+- Separate from subject with blank line
+- Use bullet points for multiple changes
+
+### Footer
+- Reference issues: `Fixes #123`
+- Breaking changes: `BREAKING CHANGE: description`
+
+### Examples
+```
+feat(compiler): add C language support
+
+Implement C compiler integration using gcc.
+Users can now write, compile, and execute C code
+in the browser with proper error messages.
+
+Fixes #42
+```
+
+```
+fix(auth): resolve token expiration issue
+
+Tokens were not being refreshed on page reload.
+Implemented automatic token refresh using
+refresh token rotation.
+
+Fixes #89
 ```
 
 ---
 
-### 3. Add Upstream Repository
+## Pull Request Process
 
-```bash
-git remote add upstream https://github.com/JiyaBatra/CODEVIBE-.git   # Link original repository
-git remote -v                                                         # Verify remotes
+### Before Creating a PR
+- [ ] Synced fork with upstream main branch
+- [ ] Tested changes locally
+- [ ] Added/updated tests for changes
+- [ ] Updated relevant documentation
+- [ ] Ran linter and fixed issues
+- [ ] Ensured no console errors/warnings
+
+### PR Title Format
+```
+[type]: Short description of changes
+```
+
+Examples:
+- `[feat]: Add dark mode support`
+- `[fix]: Fix memory leak in compiler`
+- `[docs]: Update API documentation`
+
+### PR Description Template
+```markdown
+## Description
+Brief description of what this PR does.
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Related Issue
+Fixes #(issue number)
+
+## Changes Made
+- Change 1
+- Change 2
+- Change 3
+
+## How to Test
+Steps to test the changes:
+1. Step 1
+2. Step 2
+
+## Screenshots (if applicable)
+Add screenshots for UI changes.
+
+## Checklist
+- [ ] My code follows the code style
+- [ ] I have performed self-review
+- [ ] I have commented complex code
+- [ ] I have updated documentation
+- [ ] New tests added/updated
+- [ ] Tests pass locally
+- [ ] No new warnings generated
+```
+
+### PR Review
+- Maintainers will review within 2-3 days
+- Changes may be requested
+- Be responsive to feedback
+- Push additional commits to fix issues
+- Request re-review when ready
+
+### Merging
+- PRs are merged by maintainers
+- Commits are squashed or rebased based on project preference
+- Delete your branch after merge
+
+---
+
+## Reporting Issues
+
+### Bug Report Template
+```markdown
+## Description
+Clear description of the bug.
+
+## Steps to Reproduce
+1. Go to '...'
+2. Click on '...'
+3. Scroll down to '...'
+4. See error
+
+## Expected Behavior
+What should happen.
+
+## Actual Behavior
+What actually happens.
+
+## Environment
+- OS: [e.g., Windows, macOS, Linux]
+- Browser: [e.g., Chrome, Firefox]
+- Node Version: [e.g., 16.13.0]
+
+## Logs/Screenshots
+Attach console logs or screenshots.
+
+## Possible Solution
+(Optional) Suggest a fix.
+```
+
+### Bug Report Best Practices
+- Use clear, descriptive titles
+- Provide minimal reproducible example
+- Include relevant browser console errors
+- Test on latest version first
+- Search existing issues before reporting
+
+---
+
+## Feature Requests
+
+### Feature Request Template
+```markdown
+## Description
+Clear description of the feature.
+
+## Motivation
+Why is this feature needed?
+
+## Proposed Solution
+How should it work?
+
+## Alternatives
+Other approaches considered.
+
+## Example Use Case
+How would users benefit?
+```
+
+### Feature Request Best Practices
+- Check existing issues/discussions first
+- Provide clear use cases
+- Consider impact on other features
+- Be open to alternative solutions
+- Discuss before implementing
+
+---
+
+## Style Guide
+
+### JavaScript/React
+```javascript
+// Use const by default, let when needed
+const username = 'John';
+
+// Use arrow functions
+const handleClick = () => {
+  // implementation
+};
+
+// Component naming - PascalCase
+function UserProfile() {
+  return <div>Profile</div>;
+}
+
+// Variable/function naming - camelCase
+const userData = {};
+const fetchUserData = () => {};
+
+// Use destructuring
+const { name, email } = user;
+
+// Template literals for strings
+const message = `Hello, ${name}!`;
+```
+
+### CSS
+```css
+/* Use meaningful class names */
+.course-card {
+  /* properties */
+}
+
+/* Avoid inline styles */
+/* Use CSS variables */
+.container {
+  color: var(--primary-color);
+}
+
+/* Organize properties logically */
+.card {
+  /* Layout properties */
+  display: flex;
+  flex-direction: column;
+  
+  /* Spacing */
+  margin: 1rem;
+  padding: 1.5rem;
+  
+  /* Visual properties */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+```
+
+### Comments
+```javascript
+// Single line comment for code explanation
+const result = calculateTotal(); // explains what this does
+
+/**
+ * Multi-line comment for functions
+ * @param {string} name - User name
+ * @returns {object} User data
+ */
+function getUserData(name) {
+  // implementation
+}
 ```
 
 ---
 
-### 4. Create a New Branch
+## Review Process
+
+### What Maintainers Look For
+1. **Code Quality**
+   - Follows project style guide
+   - Clear and maintainable
+   - Proper error handling
+   - No unnecessary complexity
+
+2. **Tests**
+   - Tests for new features
+   - Tests for bug fixes
+   - Good test coverage
+   - Meaningful test descriptions
+
+3. **Documentation**
+   - Code comments where needed
+   - README updates if applicable
+   - API documentation for new endpoints
+   - Example usage for complex features
+
+4. **Performance**
+   - No unnecessary re-renders
+   - Efficient algorithms
+   - Proper caching
+   - Minimal bundle size impact
+
+### Timeline
+- **2-3 days**: Initial review
+- **24 hours**: Response to requested changes
+- **1 week**: Re-review and merge decision
+
+---
+
+## Development Workflow Example
 
 ```bash
-git checkout -b feature/your-feature-name   # Create and switch to a new branch
+# 1. Create feature branch
+git checkout -b feature/add-dark-mode
+
+# 2. Make changes and commit
+git add .
+git commit -m "feat(ui): add dark mode support"
+
+# 3. Keep updated with upstream
+git fetch upstream
+git rebase upstream/main
+
+# 4. Push to your fork
+git push origin feature/add-dark-mode
+
+# 5. Create PR on GitHub
+
+# 6. Address feedback (if any)
+git add .
+git commit -m "style: adjust dark mode colors based on feedback"
+git push origin feature/add-dark-mode
+
+# 7. PR merged and branch deleted
 ```
 
 ---
 
-## Sync Your Fork
+## Resources
 
-Always sync your fork before starting any work:
-
-```bash
-git fetch upstream            # Fetch latest changes from original repository
-git checkout main             # Switch to main branch
-git merge upstream/main       # Merge updates into your local main
-git push origin main          # Push updated main to your fork
-```
+- [GitHub Flow Guide](https://guides.github.com/introduction/flow/)
+- [Semantic Versioning](https://semver.org/)
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [MDN Web Docs](https://developer.mozilla.org/)
+- [React Documentation](https://react.dev/)
+- [Node.js Documentation](https://nodejs.org/docs/)
 
 ---
 
-## Making Changes
+## Getting Help
 
-* Keep changes minimal and relevant
-* Follow the existing project structure
-* Avoid modifying unrelated files
-
----
-
-## Commit and Push
-
-```bash
-git add .                                   # Stage changes
-git commit -m "Add: meaningful message"     # Write a clear commit message
-git push origin feature/your-feature-name  # Push your branch
-```
-
-After pushing, create a Pull Request.
+- **GitHub Issues**: Use for bugs and features
+- **GitHub Discussions**: Use for questions and ideas
+- **Email**: contribute@codevibe.dev
 
 ---
 
-## Contribution Rules
+## Recognition
 
-### Issues
-
-* Issues are assigned on a **first come, first serve** basis
-* Raising an issue does **not guarantee assignment**
-* Maintainers will assign issues
-
----
-
-### Code and Design
-
-* Do not change styling unless necessary
-* Do not break existing UI
-* Only required changes should be made
-* Maintain a professional coding approach
+Contributors will be recognized in:
+- README contributors section
+- GitHub contributors page
+- Monthly community highlights
+- Special badges for major contributions
 
 ---
 
-## Notes
+## Final Notes
 
-* Some features (e.g., progress reports) may temporarily stop working during updates
-* Do not modify core functionality without prior discussion
-* Always check existing issues before creating a new one
+- Start small with documentation or simple bug fixes
+- Read existing code to understand patterns
+- Don't hesitate to ask questions
+- Be patient with review process
+- Have fun learning and contributing!
 
----
-
-## Communication
-
-* Keep communication clear and concise
-* Ask questions if you are stuck
-* Stay relevant in discussions
-
----
-
-## Best Practices
-
-* Keep Pull Requests small and focused
-* Sync your fork before starting work
-* Write clean, readable, and maintainable code
+Thank you for making CodeVibe better! 🚀
 
 ---
 
