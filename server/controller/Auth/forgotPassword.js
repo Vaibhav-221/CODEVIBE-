@@ -2,6 +2,7 @@
 const UserModel = require("../../models/user.models");
 const crypto = require("crypto");
 const rateLimit = require("express-rate-limit");
+const nodemailer = require("nodemailer");
 
 // Rate limit: 5 requests per 10 minutes
 const forgotPasswordLimiter = rateLimit({
@@ -29,45 +30,33 @@ const forgotPasswordLogic = async (req, res, next) => {
     user.resetTokenExpiry = expiry;
     await user.save();
 
-    // Send email using Resend API (Test Mode)
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.error("Missing RESEND_API_KEY");
-      return res.status(500).json({ message: "Email service not configured properly" });
-    }
-
     // Use environment variable if it exists, otherwise fallback to the live Netlify site
     const clientUrl = process.env.CLIENT_URL || "https://codevibeforyou.netlify.app";
     const resetLink = `${clientUrl}/ResetPassword?token=${token}`;
-    let emailResponse;
-    try {
-      emailResponse = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          from: "Acme <onboarding@resend.dev>",
-          to: [Email],
-          subject: "Reset your password",
-          html: `<p>Click here to reset your password: <a href="${resetLink}">${resetLink}</a></p><p>This link expires in 15 minutes.</p>`
-        })
-      });
-    } catch (fetchError) {
-      console.error("Fetch implementation error:", fetchError);
-      return res.status(500).json({ 
-        message: "Internal Server Error during email sending", 
-        error: fetchError.message + " (Check Node.js version, requires 18+ for native fetch)" 
-      });
-    }
 
-    if (!emailResponse.ok) {
-      const errorData = await emailResponse.json();
-      console.error("Resend API error:", errorData);
+    // Nodemailer setup
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: Email,
+      subject: "Reset your password",
+      html: `<p>Click here to reset your password: <a href="${resetLink}">${resetLink}</a></p><p>This link expires in 15 minutes.</p>`,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (mailError) {
+      console.error("Nodemailer error:", mailError);
       return res.status(500).json({ 
-        message: "Failed to send reset email", 
-        error: errorData.message || "Unknown Resend Error" 
+        message: "Failed to send reset email via Nodemailer", 
+        error: mailError.message 
       });
     }
 
