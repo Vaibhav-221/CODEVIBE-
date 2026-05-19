@@ -1,4 +1,5 @@
 // controller/Auth/resetPassword.js
+const bcrypt = require("bcryptjs");
 const UserModel = require("../../models/user.models");
 
 const resetPassword = async (req, res, next) => {
@@ -22,7 +23,7 @@ const resetPassword = async (req, res, next) => {
     }
 
     // Update password
-    user.password = newPassword;
+    user.password = await bcrypt.hash(newPassword, 10);
     
     // Invalidate token
     user.resetToken = undefined;

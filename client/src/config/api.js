@@ -3,7 +3,7 @@
 
 const getBackendURL = () => {
   const hostname = window.location.hostname;
-  
+
   // Check if running locally
   if (
     hostname === "localhost" ||
@@ -13,14 +13,13 @@ const getBackendURL = () => {
   ) {
     return "http://localhost:5002";
   }
-  
+
   // Production backend
   return "https://codevibe-3.onrender.com";
 };
 
 export const API_BASE_URL = getBackendURL();
 
-// Export axios instance with pre-configured base URL
 export const createApiClient = (axios) => {
   return axios.create({
     baseURL: API_BASE_URL,

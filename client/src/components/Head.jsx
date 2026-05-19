@@ -60,11 +60,19 @@ const Head = () => {
     if (suggestions.length > 0) handleSelect(suggestions[0]);
   };
 
-  const clearSearch = () => {
-    setQuery("");
-    setSuggestions([]);
-    inputRef.current?.focus();
-  };
+const handleLogout = () => {
+  localStorage.removeItem("user");
+  setUser(null);
+  closeMobileMenu();
+  navigate("/login");
+  window.location.reload();
+};
+
+const clearSearch = () => {
+  setQuery("");
+  setSuggestions([]);
+  inputRef.current?.focus();
+};
 
   return (
     <header className="site-header">
@@ -136,7 +144,7 @@ const Head = () => {
           role="search"
           aria-label="Search courses"
         >
-          <FaSearch className="search-icon-left" aria-hidden="true" />
+          {/*<FaSearch className="search-icon-left" aria-hidden="true" />*/}
           <input
             ref={inputRef}
             type="text"

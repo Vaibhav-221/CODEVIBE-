@@ -39,39 +39,63 @@ const forgotPasswordLogic = async (req, res, next) => {
     const resetLink = `${clientUrl}/ResetPassword?token=${token}`;
 
     const emailUser = process.env.EMAIL_USER;
-    const emailPass = process.env.EMAIL_PASS;
+    const rawEmailPass = process.env.EMAIL_PASS;
+    const emailPass = rawEmailPass?.replace(/^"(.*)"$/, "$1");
+    const emailService = process.env.EMAIL_SERVICE || "gmail";
+    const emailHost = process.env.EMAIL_HOST || (emailService === "gmail" ? "smtp.gmail.com" : undefined);
+    const emailPort = Number(process.env.EMAIL_PORT || (emailService === "gmail" ? 465 : 587));
+    const emailSecure = process.env.EMAIL_SECURE === "true" || emailPort === 465;
+
+    const emailFrom = process.env.EMAIL_FROM || emailUser || `no-reply@${(process.env.CLIENT_URL || "codevibeforyou.netlify.app").replace(/^https?:\/\//, "")}`;
+    const mailOptions = {
+      from: emailFrom,
+      to: Email,
+      subject: "Reset your CodeVibe password",
+      html: `<p>Click here to reset your password: <a href="${resetLink}">${resetLink}</a></p><p>This link expires in 15 minutes.</p>`,
+    };
 
     if (!emailUser || !emailPass) {
-      console.error("❌ CRITICAL: EMAIL_USER or EMAIL_PASS not set in environment variables.");
-      return res.status(500).json({ 
-        message: "Email service not configured. Maintainer: Please set EMAIL_USER and EMAIL_PASS in your environment settings.",
-        setupRequired: true 
+      console.error("❌ EMAIL_USER or EMAIL_PASS is missing.");
+      console.error("Reset link:", resetLink);
+
+      return res.status(500).json({
+        success: false,
+        message: "Email service is not configured. Please set EMAIL_USER and EMAIL_PASS in environment variables.",
+        resetLink,
       });
     }
 
-    // Nodemailer setup
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
+    const transporterConfig = {
+      host: emailHost,
+      port: emailPort,
+      secure: emailSecure,
       auth: {
         user: emailUser,
         pass: emailPass,
       },
-    });
-
-    const mailOptions = {
-      from: emailUser,
-      to: Email,
-      subject: "Reset your password",
-      html: `<p>Click here to reset your password: <a href="${resetLink}">${resetLink}</a></p><p>This link expires in 15 minutes.</p>`,
     };
 
+    const transporter = nodemailer.createTransport(transporterConfig);
+    console.log("Nodemailer config:", {
+      host: transporterConfig.host,
+      port: transporterConfig.port,
+      secure: transporterConfig.secure,
+      user: emailUser,
+    });
+
     try {
+      await transporter.verify();
       await transporter.sendMail(mailOptions);
     } catch (mailError) {
       console.error("Nodemailer error:", mailError);
-      return res.status(500).json({ 
-        message: "Failed to send reset email via Nodemailer", 
-        error: mailError.message 
+      console.warn("Reset link:", resetLink);
+
+      return res.status(500).json({
+        success: false,
+        message: "Failed to send reset email. Please verify your Gmail SMTP credentials and settings.",
+        error: mailError.message,
+        response: mailError.response || null,
+        resetLink,
       });
     }
 

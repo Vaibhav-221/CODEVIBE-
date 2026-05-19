@@ -16,6 +16,7 @@ import mongoLogo from '../assets/mongoLogo.png';
 const Courses = () => {
   const [search, setSearch] = useState('');
   const [user, setUser] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
@@ -32,6 +33,7 @@ const Courses = () => {
       link: '/HtmlLesson',
       level: 'Beginner',
       duration: '15 lessons',
+      category: 'Frontend',
     },
     {
       title: 'CSS for Beginners',
@@ -40,6 +42,7 @@ const Courses = () => {
       link: '/CssLesson',
       level: 'Beginner',
       duration: '14 lessons',
+      category: 'Frontend',
     },
     {
       title: 'JS for Beginners',
@@ -48,6 +51,7 @@ const Courses = () => {
       link: '/JsLesson',
       level: 'Intermediate',
       duration: '29 lessons',
+      category: 'Frontend',
     },
     {
       title: 'C Language for You!',
@@ -56,6 +60,7 @@ const Courses = () => {
       link: '/CLesson',
       level: 'Beginner',
       duration: '17 lessons',
+      category: 'Programming',
     },
     {
       title: 'OOP Concepts',
@@ -64,6 +69,7 @@ const Courses = () => {
       link: '/OopLesson',
       level: 'Intermediate',
       duration: '14 lessons',
+      category: 'Programming',
     },
     {
       title: 'Data Structures & Algorithms',
@@ -72,6 +78,7 @@ const Courses = () => {
       link: '/DsaLesson',
       level: 'Advanced',
       duration: '12 lessons',
+      category: 'Programming',
     },
     {
       title: 'Node.js',
@@ -80,6 +87,7 @@ const Courses = () => {
       link: '/NodeLesson',
       level: 'Intermediate',
       duration: '12 lessons',
+      category: 'Backend',
     },
     {
       title: 'React.js',
@@ -88,6 +96,7 @@ const Courses = () => {
       link: '/ReactLesson',
       level: 'Intermediate',
       duration: '13 lessons',
+      category: 'Frontend',
     },
     {
       title: 'Express.js',
@@ -96,6 +105,7 @@ const Courses = () => {
       link: '/ExpressLesson',
       level: 'Intermediate',
       duration: '10 lessons',
+      category: 'Backend',
     },
     {
       title: 'MongoDB',
@@ -104,12 +114,17 @@ const Courses = () => {
       link: '/MongoLesson',
       level: 'Beginner',
       duration: '8 lessons',
+      category: 'Database',
     },
   ];
 
-  const filteredCourses = courses.filter((course) =>
-    course.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const categories = ['All', ...new Set(courses.map(course => course.category))];
+
+  const filteredCourses = courses.filter((course) => {
+    const matchesSearch = course.title.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   // Get level badge color
   const getLevelBadge = (level) => {
@@ -156,7 +171,7 @@ const Courses = () => {
         </div>
       )}
 
-      {/* Header Section - Removed Search */}
+      {/* Header Section */}
       <div
         style={{
           display: 'flex',
@@ -178,6 +193,45 @@ const Courses = () => {
         >
           📚 Available Courses
         </h2>
+      </div>
+
+      {/* Category Filter Buttons */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '12px',
+          marginBottom: '32px',
+          justifyContent: 'center',
+        }}
+      >
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => setSelectedCategory(category)}
+            style={{
+              padding: '8px 20px',
+              borderRadius: '30px',
+              fontSize: '0.9rem',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              background: selectedCategory === category ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+              color: 'white',
+              border: selectedCategory === category ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(255,255,255,0.1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+            }}
+            onMouseLeave={(e) => {
+              if (selectedCategory !== category) {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+              }
+            }}
+          >
+            {category}
+          </button>
+        ))}
       </div>
 
       {/* Course Grid */}
@@ -280,6 +334,28 @@ const Courses = () => {
                 {course.title}
               </h3>
 
+              {/* Category Chip */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: '8px',
+                }}
+              >
+                <span
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    color: 'rgba(255,255,255,0.6)',
+                    padding: '2px 10px',
+                    borderRadius: '15px',
+                    fontSize: '0.7rem',
+                  }}
+                >
+                  {course.category}
+                </span>
+              </div>
+
               {/* Duration */}
               <div
                 style={{
@@ -353,7 +429,7 @@ const Courses = () => {
             🔍 No courses found
           </h3>
           <p style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Try searching for something else
+            Try adjusting your category or search
           </p>
         </div>
       )}

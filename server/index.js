@@ -38,6 +38,17 @@ backend.use(
 
 backend.use(routes);
 
+// Central JSON error handler for API responses
+backend.use((err, req, res, next) => {
+  console.error("Unhandled server error:", err);
+  const status = err.status || 500;
+  res.status(status).json({
+    success: false,
+    message: err.message || "Internal server error",
+    ...(process.env.NODE_ENV !== "production" ? { stack: err.stack } : {}),
+  });
+});
+
 const MONGODB_URL = process.env.DB_URL || "mongodb://127.0.0.1:27017/codevibe";
 
 mongoose
