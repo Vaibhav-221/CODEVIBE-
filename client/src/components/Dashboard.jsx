@@ -11,10 +11,6 @@ const Dashboard = () => {
     logout();
     navigate("/Login");
   };
-/*  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  };*/
 
   const handleViewReport = (course) => {
     // yaha course select karke report page pe bhejenge

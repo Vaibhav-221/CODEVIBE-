@@ -20,7 +20,6 @@ const getBackendURL = () => {
 
 export const API_BASE_URL = getBackendURL();
 
-// Export axios instance with pre-configured base URL
 export const createApiClient = (axios) => {
   return axios.create({
     baseURL: API_BASE_URL,
