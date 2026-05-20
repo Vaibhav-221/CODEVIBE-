@@ -1,6 +1,7 @@
 // src/components/Progress.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 const Progress = () => {
   const [progress, setProgress] = useState(null);
@@ -14,7 +15,7 @@ const Progress = () => {
     }
 
     axios
-      .get(`http://localhost:5002/api/progress/${email}`)
+      .get(`${API_BASE_URL}/api/progress/${email}`)
       .then((res) => {
         setProgress(res.data);
         setLoading(false);
