@@ -1,6 +1,6 @@
 # Contributor Leaderboard
 
-This leaderboard is generated automatically for `divyagsharma2006-blip/CODEVIBE-` by GitHub Actions.
+This leaderboard is generated automatically for `JiyaBatra/CODEVIBE-` by GitHub Actions.
 
 Last updated: 2026-05-23
 
@@ -25,16 +25,16 @@ Last updated: 2026-05-23
 | 9 | [@jagrati7305](https://github.com/jagrati7305) | 31 | 3 | 2 | 1 |
 | 10 | [@indresh404](https://github.com/indresh404) | 27 | 6 | 1 | 1 |
 | 11 | [@shreyamevada6](https://github.com/shreyamevada6) | 26 | 3 | 1 | 2 |
-| 12 | [@YashvardhanJani](https://github.com/YashvardhanJani) | 23 | 4 | 1 | 1 |
-| 13 | [@Mudita-Singh](https://github.com/Mudita-Singh) | 22 | 1 | 1 | 2 |
-| 14 | [@ArshiBansal](https://github.com/ArshiBansal) | 21 | 3 | 1 | 1 |
-| 15 | [@pratiyushraj007-Dev](https://github.com/pratiyushraj007-Dev) | 21 | 3 | 1 | 1 |
-| 16 | [@Mradul-0605](https://github.com/Mradul-0605) | 20 | 0 | 1 | 2 |
-| 17 | [@Samirahs08](https://github.com/Samirahs08) | 19 | 2 | 1 | 1 |
-| 18 | [@suryagkp2007-cmyk](https://github.com/suryagkp2007-cmyk) | 19 | 2 | 1 | 1 |
-| 19 | [@adityavikram-01](https://github.com/adityavikram-01) | 17 | 1 | 1 | 1 |
-| 20 | [@chinmaymohite3036](https://github.com/chinmaymohite3036) | 17 | 1 | 1 | 1 |
-| 21 | [@divyagsharma2006-blip](https://github.com/divyagsharma2006-blip) | 17 | 1 | 1 | 1 |
+| 12 | [@divyagsharma2006-blip](https://github.com/divyagsharma2006-blip) | 24 | 2 | 1 | 2 |
+| 13 | [@YashvardhanJani](https://github.com/YashvardhanJani) | 23 | 4 | 1 | 1 |
+| 14 | [@Mudita-Singh](https://github.com/Mudita-Singh) | 22 | 1 | 1 | 2 |
+| 15 | [@ArshiBansal](https://github.com/ArshiBansal) | 21 | 3 | 1 | 1 |
+| 16 | [@pratiyushraj007-Dev](https://github.com/pratiyushraj007-Dev) | 21 | 3 | 1 | 1 |
+| 17 | [@Mradul-0605](https://github.com/Mradul-0605) | 20 | 0 | 1 | 2 |
+| 18 | [@Samirahs08](https://github.com/Samirahs08) | 19 | 2 | 1 | 1 |
+| 19 | [@suryagkp2007-cmyk](https://github.com/suryagkp2007-cmyk) | 19 | 2 | 1 | 1 |
+| 20 | [@adityavikram-01](https://github.com/adityavikram-01) | 17 | 1 | 1 | 1 |
+| 21 | [@chinmaymohite3036](https://github.com/chinmaymohite3036) | 17 | 1 | 1 | 1 |
 | 22 | [@PeyalaAnandanaidu](https://github.com/PeyalaAnandanaidu) | 17 | 1 | 1 | 1 |
 | 23 | [@ravishankar-03](https://github.com/ravishankar-03) | 17 | 1 | 1 | 1 |
 | 24 | [@Shashankpatilrcr](https://github.com/Shashankpatilrcr) | 17 | 1 | 1 | 1 |
