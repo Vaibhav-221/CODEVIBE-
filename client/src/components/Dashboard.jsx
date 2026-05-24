@@ -780,8 +780,32 @@ const Dashboard = () => {
         </div>
       </section>
     );
-  }
+  })
+  .map(([, val]) => val);
 
+  const score = courseScores.length
+    ? Math.round(courseScores.reduce((a, b) => a + b, 0) / courseScores.length)
+    : 0;
+
+    return { name, done, total, score };
+  });
+}
+
+function deriveCertificates(courseData) {
+  return courseData
+    .filter(c => c.done === c.total && c.score >= 80)
+    .map(c => ({ course: c.name, score: c.score, date: "2025-03-15" }));
+}
+
+function scoreColor(s) {
+  if (s === 0) return "rgba(255,255,255,0.4)";
+  if (s >= 80) return "#4caf50";
+  if (s >= 60) return "#BA7517";
+  return "#E24B4A";
+}
+
+// ── UI Primitives ──────────────────────────────────────────
+function ProgressBar({ pct }) {
   return (
     <section className="dashboard-shell">
       <header className="dashboard-hero">
