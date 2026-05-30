@@ -6,6 +6,7 @@ import FAQ from "./FAQ";
 import Testimonials from "./testimonials";
 import EmptyState from "./EmptyState";
 import { FaBookOpen, FaHeart, FaSearch } from "react-icons/fa";
+import { useAuth } from "../AuthProvider.jsx";
 
 // Images
 import htmlLogo from '../assets/htmlLogo.png';
@@ -21,7 +22,7 @@ import mongoLogo from '../assets/mongoLogo.png';
 
 const Courses = () => {
   const [search, setSearch] = useState('');
-  const [user, setUser] = useState(null);
+  const { user } = useAuth()
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [wishlist, setWishlist] = useState([]);
   const [animatingId, setAnimatingId] = useState(null);
@@ -29,10 +30,6 @@ const Courses = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem('user');
-    if (loggedInUser) {
-      setUser(JSON.parse(loggedInUser));
-    }
     const savedWishlist = localStorage.getItem('codevibe_wishlist');
     if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
   }, []);
@@ -57,12 +54,12 @@ const Courses = () => {
     { title: 'CSS for Beginners', desc: 'Learn how to style beautiful websites.', img: cssLogo, link: '/CssLesson', level: 'Beginner', duration: '14 lessons', time: '3h', category: 'Frontend' },
     { title: 'JS for Beginners', desc: 'Learn how to give functionality to websites.', img: jsLogo, link: '/JsLesson', level: 'Intermediate', duration: '29 lessons', time: '6h 30m', category: 'Frontend' },
     { title: 'C Language for You!', desc: 'Master the fundamentals of C programming.', img: cLogo, link: '/CLesson', level: 'Beginner', duration: '17 lessons', time: '4h', category: 'Programming' },
-    { title: 'OOP Concepts', desc: 'Learn object-oriented programming concepts.', img: OOPLogo, link: '/OopLesson', level: 'Intermediate', duration: '14 lessons', time: '3h 30m' , category: 'Programming' },
+    { title: 'OOP Concepts', desc: 'Learn object-oriented programming concepts.', img: OOPLogo, link: '/OopLesson', level: 'Intermediate', duration: '14 lessons', time: '3h 30m', category: 'Programming' },
     { title: 'Data Structures & Algorithms', desc: 'Build strong problem-solving skills.', img: dsaLogo, link: '/DsaLesson', level: 'Advanced', duration: '12 lessons', time: '8h', category: 'Programming' },
-    { title: 'Node.js', desc: 'Learn backend development with Node.js.', img: nodeLogo, link: '/NodeLesson', level: 'Intermediate', duration: '12 lessons', time: '3h' , category: 'Backend' },
-    { title: 'React.js', desc: 'Build modern frontend applications.', img: reactLogo, link: '/ReactLesson', level: 'Intermediate', duration: '13 lessons', time: '5h' , category: 'Frontend' },
-    { title: 'Express.js', desc: 'Fast and minimal backend framework.', img: expressLogo, link: '/ExpressLesson', level: 'Intermediate', duration: '10 lessons', time: '2h 30m' , category: 'Backend' },
-    { title: 'MongoDB', desc: 'Learn modern NoSQL database concepts.', img: mongoLogo, link: '/MongoLesson', level: 'Beginner', duration: '8 lessons', time: '2h' , category: 'Database' },
+    { title: 'Node.js', desc: 'Learn backend development with Node.js.', img: nodeLogo, link: '/NodeLesson', level: 'Intermediate', duration: '12 lessons', time: '3h', category: 'Backend' },
+    { title: 'React.js', desc: 'Build modern frontend applications.', img: reactLogo, link: '/ReactLesson', level: 'Intermediate', duration: '13 lessons', time: '5h', category: 'Frontend' },
+    { title: 'Express.js', desc: 'Fast and minimal backend framework.', img: expressLogo, link: '/ExpressLesson', level: 'Intermediate', duration: '10 lessons', time: '2h 30m', category: 'Backend' },
+    { title: 'MongoDB', desc: 'Learn modern NoSQL database concepts.', img: mongoLogo, link: '/MongoLesson', level: 'Beginner', duration: '8 lessons', time: '2h', category: 'Database' },
   ];
 
   const categories = ['All', ...new Set(courses.map(course => course.category))];
@@ -75,7 +72,7 @@ const Courses = () => {
   });
 
   const getLevelBadge = (level) => {
-    switch(level) {
+    switch (level) {
       case 'Beginner': return { bg: '#2e7d32', text: '#fff' };
       case 'Intermediate': return { bg: '#ed6c02', text: '#fff' };
       case 'Advanced': return { bg: '#d32f2f', text: '#fff' };
@@ -169,7 +166,7 @@ const Courses = () => {
             type="text"
             className="search-input"
             placeholder="Search for courses (HTML, React, DSA...)"
-            value={search} 
+            value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: "100%",
@@ -317,10 +314,10 @@ const Courses = () => {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
-                <div style={{ display: 'flex',  gap: '12px', justifyContent: 'center', marginTop: '8px', color: '#cbd5e1', fontSize: '14px'}}>
-                <span>📚 {course.duration}</span>
-                <span>⏱️ {course.time}</span>
-                  </div>
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '8px', color: '#cbd5e1', fontSize: '14px' }}>
+                  <span>📚 {course.duration}</span>
+                  <span>⏱️ {course.time}</span>
+                </div>
               </div>
 
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', textAlign: 'center', margin: '0 0 20px 0', flex: 1 }}>

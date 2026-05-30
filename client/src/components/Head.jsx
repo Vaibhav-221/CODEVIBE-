@@ -57,7 +57,11 @@ const Head = () => {
     setQuery(course.label);
     setSuggestions([]);
     setFocused(false);
-    navigate(course.path);
+    if (!user) {
+      navigate("/login", { state: { from: { pathname: course.path } } });
+    } else {
+      navigate(course.path);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -72,18 +76,18 @@ const Head = () => {
     }
   };
 
-const handleLogout = (e) => {
-  if (e) e.preventDefault();
-  logout();
-  setMenuOpen(false);
-  navigate("/login");
-};
+  const handleLogout = (e) => {
+    if (e) e.preventDefault();
+    logout();
+    setMenuOpen(false);
+    navigate("/login");
+  };
 
-const clearSearch = () => {
-  setQuery("");
-  setSuggestions([]);
-  inputRef.current?.focus();
-};
+  const clearSearch = () => {
+    setQuery("");
+    setSuggestions([]);
+    inputRef.current?.focus();
+  };
 
   return (
     <header className="site-header">
@@ -173,72 +177,72 @@ const clearSearch = () => {
       {/* Row 3: Search Bar */}
       {isHomePage && (
         <div className="header-search-row" ref={wrapperRef}>
-        <form
-          className={`search-form ${focused ? "search-form--focused" : ""}`}
-          onSubmit={handleSubmit}
-          role="search"
-          aria-label="Search courses"
-        >
-         {/*<FaSearch className="search-icon-left" aria-hidden="true" />*/}
-<input
-  ref={inputRef}
-  type="text"
-  id="search-courses"
-  name="searchCourses"
-  className="search-input"
-  placeholder="Search courses — HTML, DSA, React..."
-  value={query}
-  onChange={(e) => handleSearch(e.target.value)}
-  onFocus={() => setFocused(true)}
-  aria-autocomplete="list"
-  aria-controls="search-suggestions"
-  aria-expanded={suggestions.length > 0}
-  autoComplete="off"
-/>
-          {query && (
-            <button
-              type="button"
-              className="search-clear"
-              onClick={clearSearch}
-              aria-label="Clear search"
-            >
-              <FaTimes />
+          <form
+            className={`search-form ${focused ? "search-form--focused" : ""}`}
+            onSubmit={handleSubmit}
+            role="search"
+            aria-label="Search courses"
+          >
+            {/*<FaSearch className="search-icon-left" aria-hidden="true" />*/}
+            <input
+              ref={inputRef}
+              type="text"
+              id="search-courses"
+              name="searchCourses"
+              className="search-input"
+              placeholder="Search courses — HTML, DSA, React..."
+              value={query}
+              onChange={(e) => handleSearch(e.target.value)}
+              onFocus={() => setFocused(true)}
+              aria-autocomplete="list"
+              aria-controls="search-suggestions"
+              aria-expanded={suggestions.length > 0}
+              autoComplete="off"
+            />
+            {query && (
+              <button
+                type="button"
+                className="search-clear"
+                onClick={clearSearch}
+                aria-label="Clear search"
+              >
+                <FaTimes />
+              </button>
+            )}
+            <button type="submit" className="search-btn" aria-label="Search">
+              Search
             </button>
-          )}
-          <button type="submit" className="search-btn" aria-label="Search">
-            Search
-          </button>
 
-          {/* Suggestions Dropdown */}
-          {focused && suggestions.length > 0 && (
-            <ul
-              id="search-suggestions"
-              className="search-suggestions"
-              role="listbox"
-              aria-label="Course suggestions"
-            >
-              {suggestions.map((course) => (
-                <li
-                  key={course.path}
-                  role="option"
-                  className="suggestion-item"
-                  onMouseDown={() => handleSelect(course)}
-                >
-                  <FaSearch className="suggestion-icon" aria-hidden="true" />
-                  {course.label}
-                </li>
-              ))}
-            </ul>
-          )}
+            {/* Suggestions Dropdown */}
+            {focused && suggestions.length > 0 && (
+              <ul
+                id="search-suggestions"
+                className="search-suggestions"
+                role="listbox"
+                aria-label="Course suggestions"
+              >
+                {suggestions.map((course) => (
+                  <li
+                    key={course.path}
+                    role="option"
+                    className="suggestion-item"
+                    onMouseDown={() => handleSelect(course)}
+                  >
+                    <FaSearch className="suggestion-icon" aria-hidden="true" />
+                    {course.label}
+                  </li>
+                ))}
+              </ul>
+            )}
 
-          {/* No results */}
-          {focused && query.trim().length > 0 && suggestions.length === 0 && (
-            <div className="search-no-results" role="status">
-              No courses found for &ldquo;{query}&rdquo;
-            </div>
-          )}
-        </form>
-      </div>
+            {/* No results */}
+            {focused && query.trim().length > 0 && suggestions.length === 0 && (
+              <div className="search-no-results" role="status">
+                No courses found for &ldquo;{query}&rdquo;
+              </div>
+            )}
+          </form>
+        </div>
       )}
     </header>
   );
