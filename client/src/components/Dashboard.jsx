@@ -77,19 +77,21 @@ const ALL_POSSIBLE_BADGES = [
   { id: "html_master", label: "HTML Master", desc: "Complete all HTML lessons" }
 ];
 
-const buildHeatmapCells = (events = [], streak = 0, weeks = 10) => {
+const buildHeatmapCells = (heatmapData = {}, streak = 0, events = [], weeks = 10) => {
   const dayMs = 24 * 60 * 60 * 1000;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const totalDays = weeks * 7;
   const start = new Date(today.getTime() - dayMs * (totalDays - 1));
-  const activeDates = events.reduce((acc, event) => {
-    const date = new Date(event.x || event.createdAt || event.date || "");
-    if (!date || Number.isNaN(date.getTime())) return acc;
+
+  // Merge server heatmapData with event-derived counts for backward compat
+  const activeDates = { ...heatmapData };
+  events.forEach((event) => {
+    const date = new Date(event.x || event.createdAt || event.date || '');
+    if (!date || Number.isNaN(date.getTime())) return;
     const key = date.toISOString().slice(0, 10);
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {});
+    if (!activeDates[key]) activeDates[key] = 0;
+  });
 
   for (let offset = 0; offset < Math.min(streak, totalDays); offset += 1) {
     const streakDate = new Date(today.getTime() - offset * dayMs);
@@ -100,15 +102,21 @@ const buildHeatmapCells = (events = [], streak = 0, weeks = 10) => {
   return Array.from({ length: totalDays }, (_, index) => {
     const date = new Date(start.getTime() + index * dayMs);
     const dateKey = date.toISOString().slice(0, 10);
-    return {
-      date,
-      active: Boolean(activeDates[dateKey]),
-      count: activeDates[dateKey] || 0,
-    };
+    const count = activeDates[dateKey] || 0;
+    return { date, count, active: count > 0 };
   });
 };
 
-const HeatmapCalendar = ({ events = [], streak = 0 }) => {
+// Returns intensity class: 0-4 based on count
+const getHeatIntensity = (count) => {
+  if (count === 0) return 0;
+  if (count === 1) return 1;
+  if (count <= 2) return 2;
+  if (count <= 4) return 3;
+  return 4;
+};
+
+const HeatmapCalendar = ({ heatmapData = {}, events = [], streak = 0 }) => {
   const containerRef = React.useRef(null);
   const [weeks, setWeeks] = useState(32);
 
@@ -125,27 +133,34 @@ const HeatmapCalendar = ({ events = [], streak = 0 }) => {
     return () => observer.disconnect();
   }, []);
 
-  const heatmapCells = useMemo(() => buildHeatmapCells(events, streak, weeks), [events, streak, weeks]);
+  const heatmapCells = useMemo(
+    () => buildHeatmapCells(heatmapData, streak, events, weeks),
+    [heatmapData, events, streak, weeks]
+  );
 
   return (
     <div className="heatmap-calendar" ref={containerRef}>
       <div className="heatmap-label-row">
         <span>Recent activity</span>
         <div className="heatmap-legend">
-          <span className="heatmap-legend-dot heatmap-legend-dot--inactive" />
-          <span>Inactive</span>
-          <span className="heatmap-legend-dot heatmap-legend-dot--active" />
-          <span>Active</span>
+          {[0,1,2,3,4].map((lvl) => (
+            <span
+              key={lvl}
+              className={`heatmap-legend-dot heatmap-legend-dot--level-${lvl}`}
+              title={['None','1 lesson','2 lessons','3-4 lessons','5+ lessons'][lvl]}
+            />
+          ))}
+          <span>More</span>
         </div>
       </div>
       <div className="heatmap-grid" role="grid">
         {heatmapCells.map((cell) => (
           <div
             key={cell.date.toISOString()}
-            className={`heatmap-cell ${cell.active ? "heatmap-cell--active" : ""}`}
-            title={`${formatShortDate(cell.date)}${cell.active ? " — Active" : " — Rest"}`}
+            className={`heatmap-cell heatmap-cell--level-${getHeatIntensity(cell.count)}`}
+            title={`${formatShortDate(cell.date)}${cell.count > 0 ? ` — ${cell.count} lesson${cell.count > 1 ? 's' : ''}` : ' — Rest'}`}
             role="button"
-            aria-label={`${formatShortDate(cell.date)} ${cell.active ? "active" : "inactive"}`}
+            aria-label={`${formatShortDate(cell.date)} ${cell.count} lessons`}
           />
         ))}
       </div>
@@ -787,31 +802,12 @@ const Dashboard = () => {
   const metrics = useMemo(() => {
     const stats = analytics?.stats || {};
     return [
-      {
-        label: "Lessons Completed",
-        value: formatNumber(stats.lessonsCompleted),
-        icon: <BookOpen />,
-      },
-      {
-        label: "Subjects Active",
-        value: formatNumber(analytics?.subjects.length || 0),
-        icon: <LayoutDashboard />,
-      },
-      {
-        label: "Accuracy",
-        value: `${stats.averageScore || 0}%`,
-        icon: <Sparkles />,
-      },
-      {
-        label: "Total Points",
-        value: formatNumber(stats.totalPoints),
-        icon: <Wand2 />,
-      },
-      {
-        label: "Learning Streak",
-        value: formatNumber(stats.streak),
-        icon: <UserCircle />,
-      },
+      { label: 'Lessons Completed', value: formatNumber(stats.lessonsCompleted), icon: <BookOpen /> },
+      { label: 'Subjects Active',   value: formatNumber(analytics?.subjects.length || 0), icon: <LayoutDashboard /> },
+      { label: 'Accuracy',          value: `${stats.averageScore || 0}%`, icon: <Sparkles /> },
+      { label: 'Total Points',      value: formatNumber(stats.totalPoints), icon: <Wand2 /> },
+      { label: '🔥 Streak (days)',  value: formatNumber(stats.streak), icon: <Star /> },
+      { label: '🏆 Best Streak',   value: formatNumber(stats.longestStreak), icon: <UserCircle /> },
     ];
   }, [analytics]);
 
@@ -1131,14 +1127,178 @@ const Dashboard = () => {
                   <div className="chart-panel heatmap-card">
                     <div className="chart-panel-header">
                       <span>Activity Heatmap</span>
+                      <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.4)' }}>Intensity = lessons/day</span>
                     </div>
                     <HeatmapCalendar
+                      heatmapData={analytics?.analytics?.heatmapData || {}}
                       events={analytics?.analytics?.timelines?.points || []}
                       streak={analytics?.stats?.streak || 0}
                     />
                   </div>
                 </div>
               </section>
+
+              {/* ── Streak Breakdown ── */}
+              <section className="analytics-section glass-card" style={{ marginTop: '24px' }}>
+                <div className="section-header">
+                  <div>
+                    <p className="section-overline">Consistency</p>
+                    <h2>Streak breakdown</h2>
+                  </div>
+                </div>
+                <div className="stats-grid" style={{ marginTop: '16px' }}>
+                  {[
+                    { label: '🔥 Current Streak', value: `${analytics?.stats?.streak ?? 0} days`, sub: 'Consecutive days active' },
+                    { label: '🏆 Longest Streak', value: `${analytics?.stats?.longestStreak ?? 0} days`, sub: 'All-time personal best' },
+                    { label: '📅 Weekly Streak',  value: `${analytics?.stats?.weeklyStreak ?? 0} weeks`, sub: 'Consecutive active weeks' },
+                    { label: '⏱ Learning Time',  value: formatTime(analytics?.stats?.learningTime || 0), sub: 'Total time spent learning' },
+                  ].map((item) => (
+                    <article key={item.label} className="stat-card glass-card">
+                      <p className="stat-value" style={{ fontSize: '1.4rem' }}>{item.value}</p>
+                      <p className="stat-label">{item.label}</p>
+                      <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', marginTop: '4px' }}>{item.sub}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              {/* ── This Week vs Last Week ── */}
+              {analytics?.analytics?.weeklyStats && (
+                <section className="analytics-section glass-card" style={{ marginTop: '24px' }}>
+                  <div className="section-header">
+                    <div>
+                      <p className="section-overline">Weekly comparison</p>
+                      <h2>This week vs last week</h2>
+                    </div>
+                  </div>
+                  <div className="stats-grid" style={{ marginTop: '16px' }}>
+                    {[
+                      {
+                        label: 'Lessons',
+                        thisWeek: analytics.analytics.weeklyStats.thisWeek.lessons,
+                        lastWeek: analytics.analytics.weeklyStats.lastWeek.lessons,
+                        delta: analytics.analytics.weeklyStats.lessonsDelta,
+                      },
+                      {
+                        label: 'Points',
+                        thisWeek: analytics.analytics.weeklyStats.thisWeek.points,
+                        lastWeek: analytics.analytics.weeklyStats.lastWeek.points,
+                        delta: analytics.analytics.weeklyStats.pointsDelta,
+                      },
+                      {
+                        label: 'Time',
+                        thisWeek: formatTime(analytics.analytics.weeklyStats.thisWeek.time),
+                        lastWeek: formatTime(analytics.analytics.weeklyStats.lastWeek.time),
+                        delta: null,
+                      },
+                    ].map((item) => (
+                      <article key={item.label} className="stat-card glass-card">
+                        <p className="stat-label" style={{ marginBottom: '10px', fontWeight: 600 }}>{item.label}</p>
+                        <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-end' }}>
+                          <div>
+                            <p className="stat-value" style={{ fontSize: '1.5rem' }}>{item.thisWeek}</p>
+                            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.72rem' }}>This week</p>
+                          </div>
+                          <div>
+                            <p className="stat-value" style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.45)' }}>{item.lastWeek}</p>
+                            <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.72rem' }}>Last week</p>
+                          </div>
+                          {item.delta !== null && (
+                            <span style={{
+                              marginLeft: 'auto',
+                              fontSize: '0.85rem',
+                              fontWeight: 700,
+                              color: item.delta >= 0 ? '#4ade80' : '#f87171',
+                              background: item.delta >= 0 ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)',
+                              padding: '3px 9px',
+                              borderRadius: '20px',
+                            }}>
+                              {item.delta >= 0 ? `+${item.delta}` : item.delta}
+                            </span>
+                          )}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* ── Weak Topics ── */}
+              {analytics?.analytics?.weakSubjects?.length > 0 && (
+                <section className="analytics-section glass-card" style={{ marginTop: '24px', border: '1px solid rgba(248,113,113,0.25)' }}>
+                  <div className="section-header">
+                    <div>
+                      <p className="section-overline" style={{ color: '#f87171' }}>Needs attention</p>
+                      <h2>📉 Weak topics</h2>
+                    </div>
+                    <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>Score below 60%</span>
+                  </div>
+                  <div className="subject-grid" style={{ marginTop: '16px' }}>
+                    {analytics.analytics.weakSubjects.map((item) => (
+                      <article key={item.subject} className="subject-card glass-card" style={{ border: '1px solid rgba(248,113,113,0.2)' }}>
+                        <div className="subject-header">
+                          <div>
+                            <p>{item.subject}</p>
+                            <small>{item.completedLessons} of {item.totalLessons} lessons done</small>
+                          </div>
+                          <div className="subject-score" style={{ color: '#f87171' }}>
+                            {item.averageScore}%
+                          </div>
+                        </div>
+                        <div style={{ margin: '12px 0', height: '6px', borderRadius: '4px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', width: `${item.averageScore}%`, borderRadius: '4px', background: 'linear-gradient(90deg, #f87171, #fbbf24)' }} />
+                        </div>
+                        <button
+                          className="ghost-button"
+                          style={{ width: '100%', marginTop: '8px', fontSize: '0.82rem' }}
+                          onClick={() => navigate('/lessons')}
+                        >
+                          Revisit topic →
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* ── Solved / Unsolved per Subject ── */}
+              {analytics?.analytics?.subjectSolvedStats?.length > 0 && (
+                <section className="analytics-section glass-card" style={{ marginTop: '24px' }}>
+                  <div className="section-header">
+                    <div>
+                      <p className="section-overline">Completion map</p>
+                      <h2>✅ Solved vs unsolved</h2>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '16px' }}>
+                    {analytics.analytics.subjectSolvedStats.map((item) => {
+                      const pct = item.total > 0 ? Math.round((item.solved / item.total) * 100) : 0;
+                      const grad = getSubjectGradient(item.subject);
+                      return (
+                        <div key={item.subject}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.88rem' }}>
+                            <span style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 500 }}>{item.subject}</span>
+                            <span style={{ color: 'rgba(255,255,255,0.5)' }}>
+                              <span style={{ color: grad.end, fontWeight: 700 }}>{item.solved}</span> / {item.total} lessons
+                              &nbsp;·&nbsp;
+                              <span style={{ color: '#f87171' }}>{item.unsolved} left</span>
+                            </span>
+                          </div>
+                          <div style={{ height: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+                            <div style={{
+                              height: '100%',
+                              width: `${pct}%`,
+                              borderRadius: '6px',
+                              background: `linear-gradient(90deg, ${grad.start}, ${grad.end})`,
+                              transition: 'width 0.6s ease',
+                            }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
 
               <section className="subjects-section">
                 <div className="section-title-row">

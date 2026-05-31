@@ -1,4 +1,5 @@
 // models/Progress.js
+// models/Progress.js
 const mongoose = require('mongoose');
 
 const progressSchema = new mongoose.Schema({
@@ -8,11 +9,7 @@ const progressSchema = new mongoose.Schema({
   xp: { type: Number, default: 0 },
   level: { type: Number, default: 1 },
   badges: { type: [String], default: [] },
-  username: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  college: { type: String, required: true },
-  year: { type: String, required: true },
 
   
 });

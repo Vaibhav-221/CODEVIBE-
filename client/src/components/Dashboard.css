@@ -534,15 +534,11 @@ body::-webkit-scrollbar,
   display: inline-block;
 }
 
-.heatmap-legend-dot--inactive {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-}
-
-.heatmap-legend-dot--active {
-  background: linear-gradient(135deg, #ff8aac, #ff5f75);
-  box-shadow: 0 0 12px rgba(255, 110, 165, 0.18);
-}
+.heatmap-legend-dot--level-0 { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.09); }
+.heatmap-legend-dot--level-1 { background: rgba(255,140,180,0.35); }
+.heatmap-legend-dot--level-2 { background: rgba(255,110,160,0.55); }
+.heatmap-legend-dot--level-3 { background: rgba(255,85,140,0.8); box-shadow: 0 0 8px rgba(255,90,143,0.25); }
+.heatmap-legend-dot--level-4 { background: linear-gradient(135deg,#ff7aa5,#ff4f7d); box-shadow: 0 0 14px rgba(255,90,143,0.35); }
 
 .heatmap-grid {
   display: grid;
@@ -556,15 +552,14 @@ body::-webkit-scrollbar,
   width: 100%;
   aspect-ratio: 1;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.09);
   transition: background 0.2s ease, transform 0.15s ease;
 }
 
-.heatmap-cell--active {
-  background: linear-gradient(135deg, #ff7aa5, #ff4f7d);
-  box-shadow: 0 0 14px rgba(255, 90, 143, 0.22);
-}
+.heatmap-cell--level-0 { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09); }
+.heatmap-cell--level-1 { background: rgba(255,140,180,0.35); }
+.heatmap-cell--level-2 { background: rgba(255,110,160,0.55); }
+.heatmap-cell--level-3 { background: rgba(255,85,140,0.8); box-shadow: 0 0 8px rgba(255,90,143,0.25); }
+.heatmap-cell--level-4 { background: linear-gradient(135deg,#ff7aa5,#ff4f7d); box-shadow: 0 0 14px rgba(255,90,143,0.35); }
 
 .subject-trend-card {
   display: grid;

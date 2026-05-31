@@ -5,7 +5,11 @@ exports.getProgress = async (req, res) => {
     const email = req.params.email;
     if (!email) return res.status(400).json({ message: 'Email required' });
 
-    const progress = await Progress.findOne({ email });
+    if (req.user.email !== email) {
+      return res.status(403).json({ message: 'Forbidden: you can only access your own progress' });
+    }
+
+    const progress = await Progress.findOne({ email }).select('-password');
     
     if (!progress) {
       return res.json({ 
