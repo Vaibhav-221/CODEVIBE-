@@ -18,7 +18,7 @@ jobs:
       - name: Post auto reply
         uses: actions/github-script@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const message = "Thank you for your contribution! The maintainer will review your issue/PR shortly.\n\nWe appreciate your patience.";
 

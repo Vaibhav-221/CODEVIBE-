@@ -54,7 +54,7 @@ describe("POST /api/auth/register", () => {
         year: "2nd Year",
       });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(409);
     expect(res.body).toHaveProperty("message");
   });
 });
