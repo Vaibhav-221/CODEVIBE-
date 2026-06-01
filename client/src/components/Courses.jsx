@@ -10,16 +10,16 @@ import { FaBookOpen, FaHeart, FaSearch } from "react-icons/fa";
 import { useDebounce } from '../hooks/useDebounce'; // added
 
 // Images
-import htmlLogo from '../assets/htmlLogo.svg';
-import cssLogo from '../assets/cssLogo.svg';
-import jsLogo from '../assets/jsLogo.svg';
-import cLogo from '../assets/cLogo.svg';
-import OOPLogo from '../assets/OOPLogo.svg';
-import dsaLogo from '../assets/dsaLogo.svg';
-import nodeLogo from '../assets/nodeLogo.svg';
-import reactLogo from '../assets/reactLogo.svg';
-import expressLogo from '../assets/expressLogo.svg';
-import mongoLogo from '../assets/mongoLogo.svg';
+import htmlLogo from '../assets/htmlLogo.png';
+import cssLogo from '../assets/cssLogo.png';
+import jsLogo from '../assets/jsLogo.png';
+import cLogo from '../assets/cLogo.png';
+import OOPLogo from '../assets/OOPLogo.png';
+import dsaLogo from '../assets/dsaLogo.png';
+import nodeLogo from '../assets/nodeLogo.png';
+import reactLogo from '../assets/reactLogo.png';
+import expressLogo from '../assets/expressLogo.png';
+import mongoLogo from '../assets/mongoLogo.png';
 import axios from 'axios';
 import API_BASE_URL from '../config/api';
 

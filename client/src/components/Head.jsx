@@ -3,8 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../AuthProvider.jsx";
 import { useSearch } from "../context/SearchContext.jsx";
 import { useDebounce } from "../hooks/useDebounce"; // added
-import { FaSignInAlt, FaSignOutAlt, FaUserPlus, FaTachometerAlt, FaGamepad, FaSearch, FaTimes } from "react-icons/fa";
-import logo from "../assets/favicon.svg";
+import { FaSignInAlt, FaSignOutAlt, FaUserPlus, FaTachometerAlt, FaGamepad, FaSearch, FaTimes, FaTrophy } from "react-icons/fa";
+import logo from "../assets/favicon.png";
 import StreakCounter from "./StreakCounter.jsx";
 
 const COURSES = [
