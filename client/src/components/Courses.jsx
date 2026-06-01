@@ -168,40 +168,6 @@ const Courses = () => {
         )}
       </div>
 
-      {/* Live Search Bar */}
-      <div className="search-container">
-        <div style={{ position: "relative", width: "100%", maxWidth: "620px", margin: "0 auto 32px auto" }}>
-          <FaSearch
-            style={{
-              position: "absolute",
-              left: "1.2rem",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "rgba(255, 77, 109, 0.6)",
-              fontSize: "1.1rem",
-              pointerEvents: "none",
-            }}
-          />
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search for courses (HTML, React, DSA...)"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "12px 20px 12px 45px",
-              borderRadius: "30px",
-              border: "1px solid rgba(255,255,255,0.2)",
-              background: "rgba(255,255,255,0.05)",
-              color: "white",
-              fontSize: "1rem",
-              outline: "none",
-            }}
-          />
-        </div>
-      </div>
-
       {/* Category Filter Buttons */}
       <div style={{
         display: 'flex',
