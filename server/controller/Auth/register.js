@@ -13,22 +13,30 @@ const register = async (req, res, next) => {
     const year = req.body.year?.trim();
     const password = req.body.password;
 
+    console.log("📝 Register attempt:", { username, email, college, year, passwordLength: password?.length });
+
     const { error } = momsvalidation.validate({ username, email, password, college, year });
     if (error) {
+      console.error("❌ Validation error:", error.details[0].message);
       return res.status(400).json({
         success: false,
         message: error.details[0].message,
       });
     }
 
-    const userExist = await UserModel.findOne({
+    const duplicateQuery = {
       $or: [
-        { email },
+        { email: { $regex: `^${escapeRegex(email)}$`, $options: "i" } },
         { Email: { $regex: `^${escapeRegex(email)}$`, $options: "i" } },
       ],
-    });
+    };
+
+    const userExist = await UserModel.findOne(duplicateQuery);
+    console.log("🔍 Duplicate email lookup:", duplicateQuery, "found:", !!userExist);
+
     if (userExist) {
-      return res.status(400).json({
+      console.warn(`⚠️ Duplicate registration attempt: ${email}`);
+      return res.status(409).json({
         success: false,
         message: "User already exists",
       });

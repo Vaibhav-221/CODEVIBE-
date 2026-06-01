@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 import {
   ArrowRight,
   BarChart3,
@@ -10,9 +12,12 @@ import {
   Star,
   UserCircle,
   Wand2,
+  Flame,
+  CheckCircle2
 } from "lucide-react";
 import { useAuth } from "../AuthProvider.jsx";
 import API_BASE_URL from "../config/api";
+import DailyQuests from "./DailyQuests.jsx";
 import "./Dashboard.css";
 
 const formatNumber = (value) => {
@@ -64,6 +69,14 @@ const getSubjectGradient = (subject) => {
   return SUBJECT_GRADIENTS[key] || generateFallbackGradient(subject);
 };
 
+const ALL_POSSIBLE_BADGES = [
+  { id: "first_blood", label: "First Blood", desc: "Complete your very first lesson" },
+  { id: "night_owl", label: "Night Owl", desc: "Complete a lesson between 12 AM and 5 AM" },
+  { id: "fast_learner", label: "Fast Learner", desc: "Complete 5 lessons in a single day" },
+  { id: "weekend_warrior", label: "Weekend Warrior", desc: "Complete 5 lessons on a weekend" },
+  { id: "html_master", label: "HTML Master", desc: "Complete all HTML lessons" }
+];
+
 const buildHeatmapCells = (heatmapData = {}, streak = 0, events = [], weeks = 10) => {
   const dayMs = 24 * 60 * 60 * 1000;
   const today = new Date();
@@ -103,14 +116,30 @@ const getHeatIntensity = (count) => {
   return 4;
 };
 
-const HeatmapCalendar = ({ heatmapData = {}, events = [], streak = 0, weeks = 10 }) => {
+const HeatmapCalendar = ({ heatmapData = {}, events = [], streak = 0 }) => {
+  const containerRef = React.useRef(null);
+  const [weeks, setWeeks] = useState(32);
+
+  React.useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        // Each column is 12px cell + 6px gap = 18px
+        const calculatedWeeks = Math.floor(entry.contentRect.width / 18);
+        setWeeks(Math.max(4, calculatedWeeks));
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const heatmapCells = useMemo(
     () => buildHeatmapCells(heatmapData, streak, events, weeks),
     [heatmapData, events, streak, weeks]
   );
 
   return (
-    <div className="heatmap-calendar">
+    <div className="heatmap-calendar" ref={containerRef}>
       <div className="heatmap-label-row">
         <span>Recent activity</span>
         <div className="heatmap-legend">
@@ -134,6 +163,72 @@ const HeatmapCalendar = ({ heatmapData = {}, events = [], streak = 0, weeks = 10
             aria-label={`${formatShortDate(cell.date)} ${cell.count} lessons`}
           />
         ))}
+      </div>
+    </div>
+  );
+};
+
+const StreakWeekVisualizer = ({ events = [], streak = 0 }) => {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Get last 7 days
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today.getTime() - (6 - i) * dayMs);
+    return {
+      date: d,
+      dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
+      dateKey: d.toISOString().slice(0, 10),
+      isToday: i === 6
+    };
+  });
+
+  // Calculate active dates for last 7 days
+  const activeDates = events.reduce((acc, event) => {
+    const d = new Date(event.x || event.createdAt || event.date || "");
+    if (d && !Number.isNaN(d.getTime())) {
+      acc[d.toISOString().slice(0, 10)] = true;
+    }
+    return acc;
+  }, {});
+
+  for (let offset = 0; offset < Math.min(streak, 7); offset += 1) {
+    const streakDate = new Date(today.getTime() - offset * dayMs);
+    activeDates[streakDate.toISOString().slice(0, 10)] = true;
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', marginTop: '1.5rem', background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h4 style={{ margin: 0, fontSize: '0.95rem', color: '#ffb8d9', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
+          <Flame size={16} color="#ffb8d9" fill="#ffb8d9" style={{ flexShrink: 0 }} /> {streak} Day Streak
+        </h4>
+        <span style={{ fontSize: '0.75rem', opacity: 0.6, whiteSpace: 'nowrap' }}>Keep it burning!</span>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+        {last7Days.map((day, idx) => {
+          const isActive = activeDates[day.dateKey];
+          return (
+            <div key={day.dateKey} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+              <div style={{
+                width: '32px', height: '32px',
+                borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: isActive ? 'rgba(255, 77, 109, 0.2)' : 'transparent',
+                border: `2px solid ${isActive ? '#ff4d4d' : 'rgba(255,255,255,0.1)'}`,
+                boxShadow: isActive ? '0 0 10px rgba(255, 77, 109, 0.4)' : 'none',
+                color: isActive ? '#ff4d4d' : 'rgba(255,255,255,0.2)',
+                transition: 'all 0.3s ease'
+              }}>
+                {isActive ? <Flame size={16} fill="#ff4d4d" /> : <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />}
+              </div>
+              <span style={{ fontSize: '0.65rem', opacity: day.isToday ? 1 : 0.5, fontWeight: day.isToday ? 'bold' : 'normal', color: day.isToday ? '#ffb8d9' : 'white' }}>
+                {day.dayName}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -566,6 +661,20 @@ const Dashboard = () => {
 
   const email = user?.email || "";
 
+  const { width, height } = useWindowSize();
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [prevLevel, setPrevLevel] = useState(null);
+
+  useEffect(() => {
+    if (analytics?.stats?.level) {
+      if (prevLevel !== null && analytics.stats.level > prevLevel) {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000);
+      }
+      setPrevLevel(analytics.stats.level);
+    }
+  }, [analytics?.stats?.level, prevLevel]);
+
   useEffect(() => {
     if (!token || !email) return;
 
@@ -819,6 +928,7 @@ const Dashboard = () => {
   return (
 
     <section className="dashboard-shell">
+      {showConfetti && <Confetti width={width} height={height} recycle={false} numberOfPieces={500} />}
       <header className="dashboard-hero">
         <div>
           <p className="dashboard-subtitle">Welcome back</p>
@@ -870,12 +980,64 @@ const Dashboard = () => {
                 </div>
               </div>
 
+              <div className="gamification-progress" style={{ margin: '1.5rem 0', padding: '1.2rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                  <span style={{ fontWeight: '600', color: '#ffb8d9', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Star size={16} fill="#ffb8d9" /> Level {analytics?.stats?.level || 1}
+                  </span>
+                  <span style={{ fontSize: '0.9rem', opacity: 0.7 }}>
+                    {analytics?.stats?.xp || 0} / {(analytics?.stats?.level || 1) * 100} XP
+                  </span>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.1)', borderRadius: '8px', height: '8px', overflow: 'hidden' }}>
+                  <div style={{ 
+                    background: 'linear-gradient(90deg, #ffb8d9, #c386ff)', 
+                    height: '100%', 
+                    borderRadius: '8px',
+                    width: `${Math.min(100, ((analytics?.stats?.xp || 0) / ((analytics?.stats?.level || 1) * 100)) * 100)}%`,
+                    transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}></div>
+                </div>
+                <div style={{ textAlign: 'center', marginTop: '0.8rem', fontSize: '0.8rem', opacity: 0.6 }}>
+                  {((analytics?.stats?.level || 1) * 100) - (analytics?.stats?.xp || 0)} XP to next level
+                </div>
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {ALL_POSSIBLE_BADGES.map(badge => {
+                    const isEarned = analytics?.stats?.badges?.includes(badge.id);
+                    return (
+                      <span 
+                        key={badge.id} 
+                        title={badge.desc}
+                        style={{ 
+                          fontSize: '0.75rem', 
+                          background: 'rgba(255,255,255,0.1)', 
+                          padding: '4px 8px', 
+                          borderRadius: '6px', 
+                          color: '#fff',
+                          opacity: isEarned ? 1 : 0.4,
+                          filter: isEarned ? 'none' : 'grayscale(100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          cursor: 'help',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        {isEarned ? '🏆' : '🔒'} {badge.label}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="profile-details">
                 <div>
                   <span>Joined</span>
                   <strong>{analytics?.profile?.joinedAt ? new Date(analytics.profile.joinedAt).toLocaleDateString() : "—"}</strong>
                 </div>
-                <div className="profile-details-row">
+                <StreakWeekVisualizer events={analytics?.analytics?.timelines?.points || []} streak={analytics?.stats?.streak || 0} />
+
+                <div className="profile-details-row" style={{ marginTop: '1rem' }}>
                   <div>
                     <span>Current Streak</span>
                     <strong>{formatNumber(analytics?.stats?.streak)}</strong>
@@ -1002,7 +1164,6 @@ const Dashboard = () => {
                       heatmapData={analytics?.analytics?.heatmapData || {}}
                       events={analytics?.analytics?.timelines?.points || []}
                       streak={analytics?.stats?.streak || 0}
-                      weeks={32}
                     />
                   </div>
                 </div>
@@ -1182,6 +1343,10 @@ const Dashboard = () => {
                 </div>
 
                 <div className="subject-grid">
+                  <DailyQuests 
+                    xpEarnedToday={timelineData.points.length > 1 ? (timelineData.totalPoints - (timelineData.points[timelineData.points.length-2]?.value || 0)) : 0} 
+                    lessonsCompletedToday={analytics?.stats?.lessonsCompleted || 0} 
+                  />
                   {subjectCards.length ? (
                     subjectCards.map((subject) => (
                       <article key={subject.title} className="subject-card glass-card">

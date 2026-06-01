@@ -20,6 +20,8 @@ import nodeLogo from '../assets/nodeLogo.png';
 import reactLogo from '../assets/reactLogo.png';
 import expressLogo from '../assets/expressLogo.png';
 import mongoLogo from '../assets/mongoLogo.png';
+import axios from 'axios';
+import API_BASE_URL from '../config/api';
 
 const Courses = () => {
   const [search, setSearch] = useState('');
@@ -29,12 +31,26 @@ const Courses = () => {
   const [wishlist, setWishlist] = useState([]);
   const [animatingId, setAnimatingId] = useState(null);
   const [showWishlistOnly, setShowWishlistOnly] = useState(false);
+  const [completedLessons, setCompletedLessons] = useState([]);
+  const [progressData, setProgressData] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
     if (loggedInUser) {
-      setUser(JSON.parse(loggedInUser));
+      const parsedUser = JSON.parse(loggedInUser);
+      setUser(parsedUser);
+      const token = localStorage.getItem('authToken');
+      if (parsedUser.email && token) {
+        axios.get(`${API_BASE_URL}/api/progress/${parsedUser.email}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => {
+            setCompletedLessons(res.data.completedLessons || []);
+            setProgressData(res.data);
+          })
+          .catch(err => console.error(err));
+      }
     }
     const savedWishlist = localStorage.getItem('codevibe_wishlist');
     if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
@@ -70,16 +86,16 @@ const Courses = () => {
   };
 
   const courses = [
-    { title: 'HTML Basics', desc: 'Start your web development journey with HTML.', img: htmlLogo, link: '/HtmlLesson', level: 'Beginner', duration: '15 lessons', time: '2h 30m', category: 'Frontend' },
-    { title: 'CSS for Beginners', desc: 'Learn how to style beautiful websites.', img: cssLogo, link: '/CssLesson', level: 'Beginner', duration: '14 lessons', time: '3h', category: 'Frontend' },
-    { title: 'JS for Beginners', desc: 'Learn how to give functionality to websites.', img: jsLogo, link: '/JsLesson', level: 'Intermediate', duration: '29 lessons', time: '6h 30m', category: 'Frontend' },
-    { title: 'C Language for You!', desc: 'Master the fundamentals of C programming.', img: cLogo, link: '/CLesson', level: 'Beginner', duration: '17 lessons', time: '4h', category: 'Programming' },
-    { title: 'OOP Concepts', desc: 'Learn object-oriented programming concepts.', img: OOPLogo, link: '/OopLesson', level: 'Intermediate', duration: '14 lessons', time: '3h 30m', category: 'Programming' },
-    { title: 'Data Structures & Algorithms', desc: 'Build strong problem-solving skills.', img: dsaLogo, link: '/DsaLesson', level: 'Advanced', duration: '12 lessons', time: '8h', category: 'Programming' },
-    { title: 'Node.js', desc: 'Learn backend development with Node.js.', img: nodeLogo, link: '/NodeLesson', level: 'Intermediate', duration: '12 lessons', time: '3h', category: 'Backend' },
-    { title: 'React.js', desc: 'Build modern frontend applications.', img: reactLogo, link: '/ReactLesson', level: 'Intermediate', duration: '13 lessons', time: '5h', category: 'Frontend' },
-    { title: 'Express.js', desc: 'Fast and minimal backend framework.', img: expressLogo, link: '/ExpressLesson', level: 'Intermediate', duration: '10 lessons', time: '2h 30m', category: 'Backend' },
-    { title: 'MongoDB', desc: 'Learn modern NoSQL database concepts.', img: mongoLogo, link: '/MongoLesson', level: 'Beginner', duration: '8 lessons', time: '2h', category: 'Database' },
+    { title: 'HTML Basics', prefix: 'html', total: 15, desc: 'Start your web development journey with HTML.', img: htmlLogo, link: '/HtmlLesson', level: 'Beginner', duration: '15 lessons', time: '2h 30m', category: 'Frontend' },
+    { title: 'CSS for Beginners', prefix: 'css', total: 14, desc: 'Learn how to style beautiful websites.', img: cssLogo, link: '/CssLesson', level: 'Beginner', duration: '14 lessons', time: '3h', category: 'Frontend' },
+    { title: 'JS for Beginners', prefix: 'js', total: 29, desc: 'Learn how to give functionality to websites.', img: jsLogo, link: '/JsLesson', level: 'Intermediate', duration: '29 lessons', time: '6h 30m', category: 'Frontend' },
+    { title: 'C Language for You!', prefix: 'c', total: 17, desc: 'Master the fundamentals of C programming.', img: cLogo, link: '/CLesson', level: 'Beginner', duration: '17 lessons', time: '4h', category: 'Programming' },
+    { title: 'OOP Concepts', prefix: 'oop', total: 14, desc: 'Learn object-oriented programming concepts.', img: OOPLogo, link: '/OopLesson', level: 'Intermediate', duration: '14 lessons', time: '3h 30m' , category: 'Programming' },
+    { title: 'Data Structures & Algorithms', prefix: 'dsa', total: 12, desc: 'Build strong problem-solving skills.', img: dsaLogo, link: '/DsaLesson', level: 'Advanced', duration: '12 lessons', time: '8h', category: 'Programming' },
+    { title: 'Node.js', prefix: 'node', total: 12, desc: 'Learn backend development with Node.js.', img: nodeLogo, link: '/NodeLesson', level: 'Intermediate', duration: '12 lessons', time: '3h' , category: 'Backend' },
+    { title: 'React.js', prefix: 'react', total: 13, desc: 'Build modern frontend applications.', img: reactLogo, link: '/ReactLesson', level: 'Intermediate', duration: '13 lessons', time: '5h' , category: 'Frontend' },
+    { title: 'Express.js', prefix: 'express', total: 10, desc: 'Fast and minimal backend framework.', img: expressLogo, link: '/ExpressLesson', level: 'Intermediate', duration: '10 lessons', time: '2h 30m' , category: 'Backend' },
+    { title: 'MongoDB', prefix: 'mongo', total: 8, desc: 'Learn modern NoSQL database concepts.', img: mongoLogo, link: '/MongoLesson', level: 'Beginner', duration: '8 lessons', time: '2h' , category: 'Database' },
   ];
 
   const categories = ['All', ...new Set(courses.map(course => course.category))];
@@ -155,6 +171,62 @@ const Courses = () => {
         </div>
       )}
 
+      {/* Gamification Hook Banner */}
+      {user && progressData && (() => {
+        const currentXp = progressData.xp || 0;
+        const currentLevel = progressData.level || 1;
+        const xpAway = 100 - (currentXp % 100);
+        const nextLevel = currentLevel + 1;
+        const progressPercent = currentXp % 100;
+
+        return (
+          <div style={{
+            background: 'linear-gradient(90deg, rgba(255, 77, 109, 0.15), rgba(255, 140, 77, 0.15))',
+            borderRadius: '16px',
+            padding: '24px 32px',
+            marginBottom: '32px',
+            border: '1px solid rgba(255, 77, 109, 0.3)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '24px',
+            boxShadow: '0 8px 32px rgba(255, 77, 109, 0.1)',
+          }}>
+            <div style={{ flex: '1', minWidth: '300px' }}>
+              <h3 style={{ color: 'white', margin: '0 0 8px 0', fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}>
+                <span style={{ fontSize: '1.8rem', filter: 'drop-shadow(0 2px 4px rgba(255,215,0,0.5))' }}>🏆</span> 
+                Level {currentLevel} Developer
+              </h3>
+              <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>
+                You currently have <strong style={{ color: '#ff4d4d' }}>{currentXp} XP</strong>. 
+                You are only <strong style={{ color: '#ff8c4d' }}>{xpAway} XP</strong> away from reaching Level {nextLevel}! Complete a lesson to level up!
+              </p>
+            </div>
+            
+            <div style={{ flex: '1', minWidth: '250px', maxWidth: '400px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)', marginBottom: '8px', fontWeight: '500' }}>
+                <span>Level {currentLevel}</span>
+                <span>Level {nextLevel}</span>
+              </div>
+              <div style={{ background: 'rgba(0,0,0,0.3)', height: '12px', borderRadius: '6px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{
+                  background: 'linear-gradient(90deg, #ff4b6e, #ff8c4d)',
+                  width: `${progressPercent}%`,
+                  height: '100%',
+                  borderRadius: '6px',
+                  transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 0 10px rgba(255,77,109,0.5)'
+                }}></div>
+              </div>
+              <div style={{ textAlign: 'right', marginTop: '6px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                {progressPercent} / 100 XP to next level
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Header Section */}
       <div style={{
         display: 'flex',
@@ -220,7 +292,10 @@ const Courses = () => {
           marginTop: '20px',
           marginBottom: '60px',
         }}>
-          {filteredCourses.map((course, index) => (
+          {filteredCourses.map((course, index) => {
+            const completedCount = completedLessons.filter(id => id && id.startsWith(course.prefix)).length;
+            const progressPercent = Math.min(100, Math.round((completedCount / course.total) * 100));
+            return (
             <Link
               to={course.link}
               className="course-box"
@@ -323,21 +398,34 @@ const Courses = () => {
                 {course.desc}
               </p>
 
+              {completedCount > 0 && (
+                <div style={{ marginBottom: '16px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', marginBottom: '4px' }}>
+                    <span>{completedCount}/{course.total} Lessons</span>
+                    <span style={{ color: '#ff4d4d', fontWeight: 'bold' }}>{progressPercent}%</span>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.1)', height: '6px', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ background: 'linear-gradient(90deg, #ff4d4d, #ff8c4d)', width: `${progressPercent}%`, height: '100%', borderRadius: '3px', transition: 'width 0.5s ease' }}></div>
+                  </div>
+                </div>
+              )}
+
               <span className="start-btn" style={{
                 display: 'inline-block', textAlign: 'center',
-                background: 'rgba(255,255,255,0.1)', color: 'white',
+                background: progressPercent === 100 ? 'rgba(0, 184, 148, 0.2)' : 'rgba(255,255,255,0.1)', 
+                color: progressPercent === 100 ? '#00b894' : 'white',
                 padding: '10px 20px', borderRadius: '30px',
                 fontSize: '0.9rem', fontWeight: '500',
                 transition: 'all 0.3s ease',
-                border: '1px solid rgba(255,255,255,0.15)', marginTop: 'auto',
+                border: progressPercent === 100 ? '1px solid rgba(0, 184, 148, 0.4)' : '1px solid rgba(255,255,255,0.15)', marginTop: 'auto',
               }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = progressPercent === 100 ? 'rgba(0, 184, 148, 0.3)' : 'rgba(255,255,255,0.2)'; e.currentTarget.style.borderColor = progressPercent === 100 ? 'rgba(0, 184, 148, 0.5)' : 'rgba(255,255,255,0.3)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = progressPercent === 100 ? 'rgba(0, 184, 148, 0.2)' : 'rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor = progressPercent === 100 ? 'rgba(0, 184, 148, 0.4)' : 'rgba(255,255,255,0.15)'; }}
               >
-                Start Lesson →
+                {progressPercent === 100 ? 'Review Course ✓' : (progressPercent > 0 ? 'Continue Lesson →' : 'Start Lesson →')}
               </span>
             </Link>
-          ))}
+          )})}
         </div>
       ) : (
         <EmptyState

@@ -35,6 +35,12 @@ const Signup = () => {
 
     setResponseMsg("");
 
+    // Validate year selection
+    if (!formData.year) {
+      setResponseMsg("Please select your year");
+      return;
+    }
+
     // Password Match Validation
     if (formData.password !== formData.confirmPassword) {
       setResponseMsg("Passwords do not match");

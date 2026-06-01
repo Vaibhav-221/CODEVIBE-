@@ -307,7 +307,7 @@ const Compiler = ({
                 clearTimeout(killer);
               } catch(e) { document.body.textContent = "Error: " + (e?.message || e); }
             })();
-          <\/script>
+          <${"/"}script>
         </body>
       </html>
     `);

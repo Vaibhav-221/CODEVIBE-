@@ -22,11 +22,9 @@ exports.getLesson = async (req, res) => {
   try {
     const { id } = req.params;
     const lesson = await Lesson.findOne({ lessonId: id });
-
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
-
     res.json(lesson);
   } catch (err) {
     console.error(err);
@@ -36,7 +34,8 @@ exports.getLesson = async (req, res) => {
 
 exports.completeLesson = async (req, res) => {
   try {
-    const { email, score, coins, learningTime, type } = req.body;
+    const email = req.user.email; // derived from verified JWT
+    const { score, coins, learningTime, type } = req.body; // email removed from body
     const lessonId = req.params.id;
 
     if (!email) {
@@ -56,11 +55,9 @@ exports.completeLesson = async (req, res) => {
     } else {
       const lastDate = new Date(existingProgress.lastActiveDate);
       lastDate.setHours(0, 0, 0, 0);
-
       const diffDays = Math.floor(
         (today - lastDate) / (1000 * 60 * 60 * 24)
       );
-
       if (diffDays === 1) {
         currentStreak += 1;
       } else if (diffDays > 1) {
@@ -71,18 +68,52 @@ exports.completeLesson = async (req, res) => {
 
     longestStreak = Math.max(longestStreak, currentStreak);
 
-    const progress = await Progress.findOneAndUpdate(
+    let progress = await Progress.findOne({ email });
+    const isNewCompletion = !progress || !progress.completedLessons.includes(lessonId);
+
+    let earnedXp = 0;
+    let earnedBadges = progress?.badges || [];
+
+    if (isNewCompletion) {
+      let baseXp = Math.round((score || 100) * 0.5) || 50;
+
+      const { getLearningStreak } = require('../analytics/analyticsController');
+      const events = await Analytics.find({ email }).sort({ createdAt: 1 }).lean();
+      const currentStreak = getLearningStreak(events);
+      
+      let multiplier = 1.0;
+      if (currentStreak >= 7) multiplier = 1.5;
+      else if (currentStreak >= 3) multiplier = 1.2;
+
+      earnedXp = Math.round(baseXp * multiplier);
+
+      if (!earnedBadges.includes('first_blood') && (!progress || progress.completedLessons.length === 0)) {
+        earnedBadges.push('first_blood');
+      }
+      
+      const hour = new Date().getHours();
+      if (!earnedBadges.includes('night_owl') && (hour >= 0 && hour < 5)) {
+        earnedBadges.push('night_owl');
+      }
+    }
+
+    const currentXp = progress?.xp || 0;
+    const newTotalXp = currentXp + earnedXp;
+    const newLevel = Math.floor(newTotalXp / 100) + 1;
+
+    progress = await Progress.findOneAndUpdate(
       { email },
-      {
-        $addToSet: {
-          completedLessons: lessonId,
-        },
-        $set: {
+      { 
+        $addToSet: { completedLessons: lessonId },
+        $set: { 
           [`scores.${lessonId}`]: score || 0,
+          xp: newTotalXp,
+          level: newLevel,
+          badges: earnedBadges,
           currentStreak,
           longestStreak,
           lastActiveDate: today,
-        },
+        }
       },
       {
         new: true,
