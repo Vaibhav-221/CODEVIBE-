@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build --workspace=client"
+  command = "npm install --ignore-scripts && npm run build --workspace=client"
   publish = "client/dist"
 
 [build.environment]
