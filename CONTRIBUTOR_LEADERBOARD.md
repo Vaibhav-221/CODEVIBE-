@@ -29,10 +29,10 @@ Last updated: 2026-06-03
 | 13 | [@divyagsharma2006-blip](https://github.com/divyagsharma2006-blip) | 65 | 5 | 4 | 3 |
 | 14 | [@vasheekhan](https://github.com/vasheekhan) | 60 | 5 | 3 | 4 |
 | 15 | [@codedbydollys10](https://github.com/codedbydollys10) | 51 | 13 | 2 | 1 |
-| 16 | [@jagrati7305](https://github.com/jagrati7305) | 50 | 5 | 3 | 2 |
-| 17 | [@Haritha-054](https://github.com/Haritha-054) | 49 | 2 | 2 | 5 |
-| 18 | [@riteshpatil9686-lgtm](https://github.com/riteshpatil9686-lgtm) | 47 | 11 | 2 | 1 |
-| 19 | [@Smrithi-krishna](https://github.com/Smrithi-krishna) | 46 | 8 | 2 | 2 |
+| 16 | [@Smrithi-krishna](https://github.com/Smrithi-krishna) | 51 | 8 | 2 | 3 |
+| 17 | [@jagrati7305](https://github.com/jagrati7305) | 50 | 5 | 3 | 2 |
+| 18 | [@Haritha-054](https://github.com/Haritha-054) | 49 | 2 | 2 | 5 |
+| 19 | [@riteshpatil9686-lgtm](https://github.com/riteshpatil9686-lgtm) | 47 | 11 | 2 | 1 |
 | 20 | [@ArshiBansal](https://github.com/ArshiBansal) | 45 | 5 | 2 | 3 |
 | 21 | [@theblag](https://github.com/theblag) | 44 | 2 | 2 | 4 |
 | 22 | [@YashvardhanJani](https://github.com/YashvardhanJani) | 42 | 6 | 2 | 2 |
