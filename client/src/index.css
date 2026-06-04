@@ -157,10 +157,10 @@ header img:hover {
   text-decoration: none;
   color: white;
   font-weight: 600;
-  /* background: linear-gradient(135deg, rgba(255, 77, 109, 0.25), rgba(255, 133, 161, 0.25));
-  border: 2px solid rgba(255, 77, 109, 0.6); */
+  background: transparent;
+  border: none;
   padding: 0.55rem 1rem;
-  border-radius: 8px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -187,11 +187,12 @@ header img:hover {
 }
 
 .nav-link:hover {
-  background: linear-gradient(135deg, rgba(255, 77, 109, 0.6), rgba(255, 133, 161, 0.6));
-  border-color: #ff4d6d;
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 0 20px rgba(255, 77, 109, 0.8);
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  background: transparent;
+  border-color: transparent;
+  transform: none;
+  box-shadow: none;
+  text-shadow: none;
+  filter: none;
 }
 
 .nav-link {
@@ -215,14 +216,14 @@ header img:hover {
   height: 3px;
   background: #ff4d8d;
   border-radius: 999px;
-  box-shadow: 0 0 10px #ff4d8d;
+  box-shadow: none;
 }
 
 /* Hamburger Button - Hidden on larger screens */
 .hamburger-btn {
   display: none;
-  background: linear-gradient(135deg, rgba(255, 77, 109, 0.2), rgba(255, 133, 161, 0.2));
-  border: 2px solid rgba(255, 77, 109, 0.5);
+  background: transparent;
+  border: 2px solid transparent;
   color: white;
   width: 45px;
   height: 45px;
@@ -233,7 +234,7 @@ header img:hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(255, 77, 109, 0.3);
+  box-shadow: none;
   padding: 0;
   margin: 0;
 }
@@ -244,10 +245,11 @@ header img:hover {
 }
 
 .hamburger-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 77, 109, 0.5), rgba(255, 133, 161, 0.5));
-  border-color: #ff4d6d;
-  box-shadow: 0 0 15px rgba(255, 77, 109, 0.8);
-  transform: scale(1.08);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+  filter: none;
 }
 
 .hamburger-btn:active {
@@ -1241,7 +1243,7 @@ h3 {
 }
 
 /* Buttons - Gaming Style */
-button {
+button:not(.nav-link):not(.dropdown-btn):not(.hamburger):not(.dropdown-item) {
   background: linear-gradient(135deg, var(--primary-red), var(--secondary-pink));
   border: 2px solid transparent;
   color: var(--white);
@@ -1259,7 +1261,7 @@ button {
   letter-spacing: 0.5px;
 }
 
-button::before {
+button:not(.nav-link):not(.dropdown-btn):not(.hamburger):not(.dropdown-item)::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1271,23 +1273,23 @@ button::before {
   z-index: 1;
 }
 
-button:hover::before {
+button:not(.nav-link):not(.dropdown-btn):not(.hamburger):not(.dropdown-item):hover::before {
   left: 100%;
 }
 
-button:hover {
+button:not(.nav-link):not(.dropdown-btn):not(.hamburger):not(.dropdown-item):hover {
   transform: translateY(-3px) scale(1.05);
   background: linear-gradient(135deg, #ff6b81, #ff99ac);
   box-shadow: 0 0 25px rgba(255, 77, 109, 0.8);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-button:active {
+button:not(.nav-link):not(.dropdown-btn):not(.hamburger):not(.dropdown-item):active {
   transform: translateY(-1px) scale(1.02);
   box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
 }
 
-button:disabled {
+button:not(.nav-link):not(.dropdown-btn):not(.hamburger):not(.dropdown-item):disabled {
   background: linear-gradient(135deg, #666, #999);
   box-shadow: 0 0 10px rgba(100, 100, 100, 0.4);
   cursor: not-allowed;
@@ -1295,8 +1297,36 @@ button:disabled {
   transform: none;
 }
 
-button:disabled:hover {
+button:not(.nav-link):not(.dropdown-btn):not(.hamburger):not(.dropdown-item):disabled:hover {
   transform: none;
+}
+
+/* Navbar buttons must stay transparent and flat */
+.header-nav button.nav-link,
+.header-nav .nav-link,
+.mobile-nav button.nav-link,
+.mobile-nav .nav-link,
+.dropdown-btn {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  outline: none !important;
+  appearance: none !important;
+  margin: 0 !important;
+  padding: 0.55rem 1rem !important;
+  transform: none !important;
+}
+
+.header-nav button.nav-link:hover,
+.header-nav .nav-link:hover,
+.mobile-nav button.nav-link:hover,
+.mobile-nav .nav-link:hover,
+.dropdown-btn:hover {
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 /* Compiler - Gaming IDE Style */
@@ -1363,18 +1393,39 @@ textarea::placeholder {
    PROJECTS BUTTON
 ========================================= */
 
-.dropdown-btn {
+.dropdown-btn,
+.dropdown-btn:hover,
+.dropdown-btn:focus,
+.dropdown-btn:active,
+.dropdown-btn.active {
   display: flex;
   align-items: center;
   gap: 8px;
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
+  padding: 0.55rem 1rem !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.dropdown-btn::before,
+.dropdown-btn:hover::before {
+  display: none !important;
+  content: none !important;
 }
 
 /* Active state when dropdown is open */
 
 .dropdown-btn.active {
-  box-shadow:
-    0 0 15px rgba(255, 95, 135, 0.7),
-    0 0 30px rgba(255, 95, 135, 0.35);
+  box-shadow: none;
+  filter: none;
 }
 
 /* =========================================
@@ -1402,21 +1453,19 @@ textarea::placeholder {
 
   width: 280px;
 
-  background: rgba(18, 22, 70, 0.98);
-  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #050710 100%);
+  backdrop-filter: blur(10px);
 
-  border: 1px solid rgba(255, 95, 135, 0.25);
-  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
 
   padding: 8px;
 
-  box-shadow:
-    0 10px 35px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(255, 95, 135, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 
   z-index: 9999;
 
-  animation: dropdownOpen 0.25s ease;
+  animation: none;
 }
 
 /* =========================================
@@ -1434,7 +1483,7 @@ textarea::placeholder {
   width: 14px;
   height: 14px;
 
-  background: rgba(18, 22, 70, 0.98);
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #050710 100%);
 
   transform: translateX(-50%) rotate(45deg);
 
@@ -1472,8 +1521,8 @@ textarea::placeholder {
 /* Hover */
 
 .dropdown-item:hover {
-  background: rgba(255, 95, 135, 0.15);
-  color: #ff88a8;
+  background: transparent;
+  color: white;
 }
 
 /* Icons */
@@ -2007,9 +2056,10 @@ select:focus {
     justify-content: center;
     font-size: 1.25rem;
     padding: 1rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    border-width: 2px;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
   }
 }
 
@@ -2613,15 +2663,10 @@ select:focus {
   justify-content: center;
   font-size: 1.2rem;
   padding: 1rem 1.5rem;
-}
-
-/* ── Row 2: Title ──────────────────────────────────────────── */
-.header-title-row {
-  text-align: center;
-  position: relative;
-}
-
-.site-header h1 {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 900;
   background: linear-gradient(135deg, #ff4d6d, #ff85a1, #ff6b81);
