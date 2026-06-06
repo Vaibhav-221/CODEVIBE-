@@ -27,6 +27,7 @@ import Certificate from './components/Certificate.jsx';
 import ViewReport from './components/ViewReport.jsx';
 import DynamicProgressSidebar from './components/DynamicProgressSidebar.jsx';
 import Leaderboard from './components/Leaderboard.jsx';
+import Flashcard from './components/Flashcard.jsx';
 import {
   AuthProvider,
   PrivateRoute,
@@ -246,6 +247,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/ResetPassword" element={<ResetPassword />} />
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/flashcards" element={<Flashcard />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/report/:email" element={<ViewReport />} />
