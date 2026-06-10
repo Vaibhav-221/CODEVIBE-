@@ -2,9 +2,10 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const routes = require("./routes/index");
-
 dotenv.config();
+const routes = require("./routes/index");
+const passport = require("passport");
+require("./config/passport");
 
 const backend = express();
 backend.set("trust proxy", 1);
@@ -21,6 +22,7 @@ process.on("unhandledRejection", (reason) => {
 
 backend.use(express.json());
 backend.use(express.urlencoded({ extended: true }));
+backend.use(passport.initialize());
 
 // CORS Configuration - read allowed origins from environment or use defaults
 const allowedOrigins = (

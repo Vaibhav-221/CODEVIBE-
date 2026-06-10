@@ -14,17 +14,22 @@ const userSchema = new Schema({
   },
   college: {
     type: String,
-    required: true,
     trim: true,
   },
   year: {
     type: String,
-    required: true,
     trim: true,
   },
   password: {
     type: String,
-    required: true,
+  },
+  googleId: {
+    type: String,
+    sparse: true,
+    unique: true,
+  },
+  profilePicture: {
+    type: String,
   },
   resetToken: { type: String },       // for password reset token
   resetTokenExpiry: { type: Date },   // for password reset token expiry
