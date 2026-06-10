@@ -19,8 +19,10 @@ import { useAuth } from "../AuthProvider.jsx";
 import API_BASE_URL from "../config/api";
 // My Mistakes Dashboard - NEW FEATURE
 import MyMistakesDashboard from "./MyMistakesDashboard";
+import BookmarksWidget from "./BookmarksWidget";
 import DailyQuests from "./DailyQuests.jsx";
 import "./Dashboard.css";
+import { Upload } from 'lucide-react';
 
 const formatNumber = (value) => {
   if (value === undefined || value === null) return "—";
@@ -689,9 +691,7 @@ const Dashboard = () => {
         cancelToken: source.token,
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-        setAnalytics(response.data);
-      })
+.then((response) => {setAnalytics(response.data);})
       .catch((err) => {
         if (!axios.isCancel(err)) {
           setError(err.response?.data?.message || "Failed to load dashboard data.");
@@ -800,7 +800,6 @@ const Dashboard = () => {
       setSaving(false);
     }
   };
-
   const metrics = useMemo(() => {
     const stats = analytics?.stats || {};
     return [
@@ -841,7 +840,10 @@ const Dashboard = () => {
     return analytics?.subjects?.map((subject) => {
       const completed = subject.completedLessons || 0;
       const total = subject.totalLessons || subject.completedLessons || 0;
-      const completionValue = Math.max(0, completed);
+      const completionValue =
+  total > 0
+    ? Math.round((completed / total) * 100)
+    : 0;
 
       return {
         title: subject.subject,
@@ -916,7 +918,6 @@ const Dashboard = () => {
       spanLabel: formatGrowthSpan(adjustedPoints),
     };
   }, [analytics]);
-
   if (!user) {
     return (
       <section className="dashboard-shell">
@@ -954,7 +955,7 @@ const Dashboard = () => {
                   alt="Profile avatar"
                 />
                 <label className="avatar-upload-button">
-                  Upload
+                  <Upload size={15}/>
                   <input
                     type="file"
                     accept="image/*"
@@ -1107,7 +1108,6 @@ const Dashboard = () => {
                 </div>
               )}
             </aside>
-
             <main className="dashboard-main">
               <div className="stats-grid">
                 {metrics.map((item) => (
@@ -1297,13 +1297,16 @@ const Dashboard = () => {
               {/* ── My Mistakes Dashboard - NEW FEATURE ── */}
               <MyMistakesDashboard />
 
+              {/* ── Bookmarks Widget ── */}
+              <BookmarksWidget />
+
               {/* ── Solved / Unsolved per Subject ── */}
               {analytics?.analytics?.subjectSolvedStats?.length > 0 && (
                 <section className="analytics-section glass-card" style={{ marginTop: '24px' }}>
                   <div className="section-header">
                     <div>
                       <p className="section-overline">Completion map</p>
-                      <h2>✅ Solved vs unsolved</h2>
+                      <h2>Solved vs unsolved</h2>
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '16px' }}>

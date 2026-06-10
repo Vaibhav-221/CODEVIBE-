@@ -6,6 +6,7 @@ import { useDebounce } from "../hooks/useDebounce"; // added
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus, FaTachometerAlt, FaGamepad, FaSearch, FaTimes, FaHome, FaQuestionCircle, FaBook, FaEnvelope, FaTrophy } from "react-icons/fa";
 import logo from "../assets/favicon.png";
 import StreakCounter from "./StreakCounter.jsx";
+import NotificationBell from "./common/NotificationBell.jsx";
 import { FaChevronDown, FaTasks, FaLightbulb } from "react-icons/fa";
 
 const COURSES = [
@@ -225,6 +226,7 @@ useEffect(() => {
 
             {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' , color: 'white'}}>
+              <NotificationBell />
               <StreakCounter />
               <button
               type="button"
@@ -318,18 +320,27 @@ useEffect(() => {
 
               Home
             </NavLink>
-            <NavLink
-              to="/lessons"
-              state={{ scrollToFaq: true }}
-              className={({ isActive }) =>
-                isActive ? "nav-link active" : "nav-link"
-              }
-              onClick={() => setMenuOpen(false)}
-              
-            >
-              <FaQuestionCircle className="nav-icon" />
-              FAQ
-            </NavLink>
+           <NavLink
+  to="/lessons"
+  className={({ isActive }) =>
+    isActive ? "nav-link active" : "nav-link"
+  }
+  onClick={() => {
+    setMenuOpen(false);
+
+    setTimeout(() => {
+      document
+        .querySelector(".faq-section")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 100);
+  }}
+>
+  <FaQuestionCircle className="nav-icon" />
+  FAQ
+</NavLink>
             <NavLink
               to="/lessons"
               className={({ isActive }) =>
@@ -418,16 +429,24 @@ useEffect(() => {
         className={`mobile-nav ${menuOpen ? "mobile-nav--open" : ""}`}
         aria-label="Mobile navigation"
       >
-        <Link
-          to="/lessons"
-          className="nav-link"
-          onClick={() => {
-            setMenuOpen(false);
-            navigate('/lessons', { state: { scrollToFaq: true } });
-          }}
-        >
-          <span>FAQ</span>
-        </Link>
+<Link
+  to="/lessons"
+  className="nav-link"
+  onClick={() => {
+    setMenuOpen(false);
+
+    setTimeout(() => {
+      document
+        .querySelector(".faq-section")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 100);
+  }}
+>
+  <span>FAQ</span>
+</Link>
         <button
           type="button"
           className="nav-link"
@@ -522,7 +541,7 @@ useEffect(() => {
                 onClick={clearSearch}
                 aria-label="Clear search"
               >
-                <FaTimes />
+                <FaTimes size={15} />
               </button>
             )}
             <button type="submit" className="search-btn" aria-label="Search">
