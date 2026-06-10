@@ -14,7 +14,7 @@ Last updated: 2026-06-10
 
 | Rank | Contributor | Score | Commits | Merged PRs | Closed Issues |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 1 | [@Pcmhacker-piro](https://github.com/Pcmhacker-piro) | 495 | 5 | 15 | 67 |
+| 1 | [@Pcmhacker-piro](https://github.com/Pcmhacker-piro) | 500 | 5 | 15 | 68 |
 | 2 | [@thedaripanator](https://github.com/thedaripanator) | 155 | 15 | 9 | 7 |
 | 3 | [@Saubhagya1621](https://github.com/Saubhagya1621) | 133 | 9 | 7 | 9 |
 | 4 | [@sricharan-213](https://github.com/sricharan-213) | 131 | 8 | 7 | 9 |
@@ -26,14 +26,14 @@ Last updated: 2026-06-10
 | 10 | [@namrarafique93-del](https://github.com/namrarafique93-del) | 97 | 11 | 5 | 5 |
 | 11 | [@KGFCH2](https://github.com/KGFCH2) | 87 | 1 | 1 | 15 |
 | 12 | [@pranav-cholleti](https://github.com/pranav-cholleti) | 86 | 18 | 3 | 4 |
-| 13 | [@StarDustNova-57](https://github.com/StarDustNova-57) | 85 | 5 | 5 | 5 |
-| 14 | [@divyagsharma2006-blip](https://github.com/divyagsharma2006-blip) | 80 | 5 | 4 | 6 |
+| 13 | [@divyagsharma2006-blip](https://github.com/divyagsharma2006-blip) | 80 | 5 | 4 | 6 |
+| 14 | [@StarDustNova-57](https://github.com/StarDustNova-57) | 75 | 5 | 4 | 5 |
 | 15 | [@anshul23102](https://github.com/anshul23102) | 72 | 1 | 1 | 12 |
-| 16 | [@Owais-Siddique-11](https://github.com/Owais-Siddique-11) | 70 | 0 | 0 | 14 |
-| 17 | [@Siddh2024](https://github.com/Siddh2024) | 69 | 2 | 1 | 11 |
-| 18 | [@shivani11jadhav](https://github.com/shivani11jadhav) | 65 | 0 | 2 | 9 |
-| 19 | [@codedbydollys10](https://github.com/codedbydollys10) | 61 | 13 | 2 | 3 |
-| 20 | [@Vaibhav-221](https://github.com/Vaibhav-221) | 61 | 3 | 2 | 7 |
+| 16 | [@Vaibhav-221](https://github.com/Vaibhav-221) | 71 | 3 | 3 | 7 |
+| 17 | [@Owais-Siddique-11](https://github.com/Owais-Siddique-11) | 70 | 0 | 0 | 14 |
+| 18 | [@Siddh2024](https://github.com/Siddh2024) | 69 | 2 | 1 | 11 |
+| 19 | [@shivani11jadhav](https://github.com/shivani11jadhav) | 65 | 0 | 2 | 9 |
+| 20 | [@codedbydollys10](https://github.com/codedbydollys10) | 61 | 13 | 2 | 3 |
 | 21 | [@Haritha-054](https://github.com/Haritha-054) | 59 | 2 | 2 | 7 |
 | 22 | [@Soham156](https://github.com/Soham156) | 58 | 4 | 2 | 6 |
 | 23 | [@riteshpatil9686-lgtm](https://github.com/riteshpatil9686-lgtm) | 57 | 11 | 2 | 3 |
