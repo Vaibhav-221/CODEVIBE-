@@ -229,6 +229,7 @@ import  Contact  from "./components/Contact.jsx";
 import OAuthCallback from "./components/OAuthCallback.jsx";
 import LessonLayout from "./components/LessonLayout.jsx";
 import BookmarksPage from "./components/BookmarksPage.jsx";
+import SnippetViewer from "./components/SnippetViewer.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -262,6 +263,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="/CssLesson" element={<PrivateRoute><CssLesson /></PrivateRoute>} />
               <Route path="/JsLesson" element={<PrivateRoute><JsLesson /></PrivateRoute>} />
               <Route path="/Compiler" element={<PrivateRoute><Compiler /></PrivateRoute>} />
+              <Route path="/snippet/:slug" element={<SnippetViewer />} />
               <Route path="/contact" element={<Contact />} />
 
               {/* HTML Lessons */}
