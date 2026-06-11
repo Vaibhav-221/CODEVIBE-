@@ -14,7 +14,7 @@ Last updated: 2026-06-11
 
 | Rank | Contributor | Score | Commits | Merged PRs | Closed Issues |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 1 | [@Pcmhacker-piro](https://github.com/Pcmhacker-piro) | 551 | 8 | 17 | 73 |
+| 1 | [@Pcmhacker-piro](https://github.com/Pcmhacker-piro) | 568 | 9 | 18 | 74 |
 | 2 | [@thedaripanator](https://github.com/thedaripanator) | 155 | 15 | 9 | 7 |
 | 3 | [@Saubhagya1621](https://github.com/Saubhagya1621) | 133 | 9 | 7 | 9 |
 | 4 | [@sricharan-213](https://github.com/sricharan-213) | 131 | 8 | 7 | 9 |
